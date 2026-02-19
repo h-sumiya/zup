@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:zup/main.dart';
+import 'package:zup/src/app.dart';
 
 void main() {
   testWidgets('Zup title renders', (WidgetTester tester) async {
