@@ -16,51 +16,26 @@ env:
 
 jobs:
   build-msi:
-    name: MSI (${{ matrix.arch }})
+    name: MSI (x64)
     runs-on: windows-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        arch: [x64, x86]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: x86 status (Flutter unsupported)
-        if: matrix.arch == 'x86'
-        shell: pwsh
-        run: |
-          New-Item -ItemType Directory -Path dist -Force | Out-Null
-          @"
-          x86 MSI build is skipped in this workflow.
-          Current Flutter Windows desktop toolchains support windows-x64 and windows-arm64.
-          "@ | Set-Content -Path dist/x86-status.txt -Encoding UTF8
-
-      - name: Upload x86 status
-        if: matrix.arch == 'x86'
-        uses: actions/upload-artifact@v4
-        with:
-          name: msi-x86-status
-          path: dist/x86-status.txt
-
       - name: Set up Flutter
-        if: matrix.arch == 'x64'
         uses: subosito/flutter-action@v2
         with:
           channel: beta
           cache: true
 
       - name: Install dependencies
-        if: matrix.arch == 'x64'
         run: flutter pub get
 
       - name: Build Windows app (x64)
-        if: matrix.arch == 'x64'
         run: flutter config --enable-windows-desktop && flutter build windows --release
 
       - name: Resolve app version
-        if: matrix.arch == 'x64'
         id: meta
         shell: pwsh
         run: |
@@ -70,7 +45,6 @@ jobs:
           "product_version=$productVersion" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
 
       - name: Install WiX Toolset
-        if: matrix.arch == 'x64'
         shell: pwsh
         run: |
           choco install wixtoolset --yes --no-progress
@@ -88,7 +62,6 @@ jobs:
           $wixBin | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - name: Build MSI (x64)
-        if: matrix.arch == 'x64'
         id: msi
         shell: pwsh
         env:
@@ -147,7 +120,6 @@ jobs:
           "msi_path=$msiPath" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
 
       - name: Upload MSI artifact
-        if: matrix.arch == 'x64'
         uses: actions/upload-artifact@v4
         with:
           name: msi-x64
@@ -175,4 +147,3 @@ jobs:
           tag_name: ${{ github.ref_name }}
           files: |
             dist/**/*.msi
-            dist/**/*-status.txt
