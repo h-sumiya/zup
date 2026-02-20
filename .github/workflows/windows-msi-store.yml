@@ -1,0 +1,178 @@
+name: windows-msi-store
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+env:
+  APP_NAME: zup
+  MANUFACTURER: h-sumiya
+  UPGRADE_CODE: CE9EA3DC-1AC5-4103-85F6-6BA4B200DE7E
+
+jobs:
+  build-msi:
+    name: MSI (${{ matrix.arch }})
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x64, x86]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: x86 status (Flutter unsupported)
+        if: matrix.arch == 'x86'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path dist -Force | Out-Null
+          @"
+          x86 MSI build is skipped in this workflow.
+          Current Flutter Windows desktop toolchains support windows-x64 and windows-arm64.
+          "@ | Set-Content -Path dist/x86-status.txt -Encoding UTF8
+
+      - name: Upload x86 status
+        if: matrix.arch == 'x86'
+        uses: actions/upload-artifact@v4
+        with:
+          name: msi-x86-status
+          path: dist/x86-status.txt
+
+      - name: Set up Flutter
+        if: matrix.arch == 'x64'
+        uses: subosito/flutter-action@v2
+        with:
+          channel: beta
+          cache: true
+
+      - name: Install dependencies
+        if: matrix.arch == 'x64'
+        run: flutter pub get
+
+      - name: Build Windows app (x64)
+        if: matrix.arch == 'x64'
+        run: flutter config --enable-windows-desktop && flutter build windows --release
+
+      - name: Resolve app version
+        if: matrix.arch == 'x64'
+        id: meta
+        shell: pwsh
+        run: |
+          $versionLine = (Get-Content pubspec.yaml | Where-Object { $_ -match '^version:\s*' } | Select-Object -First 1)
+          if (-not $versionLine) { throw "No version found in pubspec.yaml" }
+          $productVersion = ($versionLine -replace '^version:\s*', '').Split('+')[0].Trim()
+          "product_version=$productVersion" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      - name: Install WiX Toolset
+        if: matrix.arch == 'x64'
+        shell: pwsh
+        run: |
+          choco install wixtoolset --yes --no-progress
+          $candidateBins = @()
+          if ($env:WIX) {
+            $candidateBins += (Join-Path $env:WIX "bin")
+          }
+          $candidateBins += Get-ChildItem "C:\Program Files (x86)" -Directory -Filter "WiX Toolset v*" -ErrorAction SilentlyContinue |
+            Sort-Object Name -Descending |
+            ForEach-Object { Join-Path $_.FullName "bin" }
+          $wixBin = $candidateBins | Where-Object { Test-Path $_ } | Select-Object -First 1
+          if (-not (Test-Path $wixBin)) {
+            throw "WiX bin directory not found."
+          }
+          $wixBin | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+      - name: Build MSI (x64)
+        if: matrix.arch == 'x64'
+        id: msi
+        shell: pwsh
+        env:
+          PRODUCT_VERSION: ${{ steps.meta.outputs.product_version }}
+        run: |
+          $bundleDir = "build/windows/x64/runner/Release"
+          if (-not (Test-Path $bundleDir)) {
+            throw "Build output not found: $bundleDir"
+          }
+
+          $iconPath = "windows/runner/resources/app_icon.ico"
+          if (-not (Test-Path $iconPath)) {
+            throw "Icon not found: $iconPath"
+          }
+
+          New-Item -ItemType Directory -Path "dist" -Force | Out-Null
+          New-Item -ItemType Directory -Path "build/wix" -Force | Out-Null
+
+          $harvestFile = "build/wix/harvested.wxs"
+
+          heat.exe dir $bundleDir `
+            -nologo `
+            -cg AppFiles `
+            -dr INSTALLFOLDER `
+            -srd `
+            -sreg `
+            -scom `
+            -gg `
+            -var var.SourceDir `
+            -out $harvestFile
+
+          candle.exe `
+            -nologo `
+            -arch x64 `
+            -dProductName="$env:APP_NAME" `
+            -dManufacturer="$env:MANUFACTURER" `
+            -dProductVersion="$env:PRODUCT_VERSION" `
+            -dUpgradeCode="$env:UPGRADE_CODE" `
+            -dPlatform="x64" `
+            -dProgramFilesFolderId="ProgramFiles64Folder" `
+            -dInstallDirName="$env:APP_NAME" `
+            -dSourceDir="$bundleDir" `
+            -dIconPath="$iconPath" `
+            ".github/wix/Product.wxs" `
+            $harvestFile `
+            -out "build/wix/"
+
+          $msiPath = "dist/$($env:APP_NAME)-$($env:PRODUCT_VERSION)-windows-x64.msi"
+
+          light.exe `
+            -nologo `
+            "build/wix/Product.wixobj" `
+            "build/wix/harvested.wixobj" `
+            -out $msiPath
+
+          "msi_path=$msiPath" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      - name: Upload MSI artifact
+        if: matrix.arch == 'x64'
+        uses: actions/upload-artifact@v4
+        with:
+          name: msi-x64
+          path: ${{ steps.msi.outputs.msi_path }}
+
+  upload-release-assets:
+    name: Upload Release Assets
+    runs-on: ubuntu-latest
+    needs: build-msi
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - name: Download all workflow artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Show downloaded assets
+        run: ls -laR dist
+
+      - name: Upload assets to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: |
+            dist/**/*.msi
+            dist/**/*-status.txt
