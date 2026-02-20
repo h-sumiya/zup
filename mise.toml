@@ -1,5 +1,5 @@
 [tasks.testWin]
-run_windows = "git pull && flutter run -d windows"
+run_windows = "git fetch origin main && git reset --hard origin/main && flutter run -d windows"
 
 [tasks.updateDeps]
 run = "flutter pub upgrade --major-versions"
