@@ -1,6 +1,15 @@
 [tasks.testWin]
 run_windows = "git pull && flutter run -d windows"
 
+[tasks.updateDeps]
+run = "flutter pub upgrade --major-versions"
+
+[tasks.genAppIcons]
+run = "flutter packages pub run flutter_launcher_icons:main"
+
+[tasks.format]
+run = "dart format ."
+
 [tasks.devSite]
 dir = "site"
 run = "npm run dev"
