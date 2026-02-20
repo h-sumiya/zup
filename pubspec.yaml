@@ -2,7 +2,7 @@ name: zup
 description: "Zup is a desktop updater for applications distributed as ZIP assets on GitHub Releases."
 publish_to: "none"
 
-version: 0.0.2
+version: 0.0.3
 
 environment:
   sdk: ^3.11.0-200.1.beta
@@ -29,7 +29,14 @@ dev_dependencies:
 
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.4
+  msix: ^3.16.13
 
 flutter:
   generate: true
   uses-material-design: true
+
+msix_config:
+  display_name: Zup
+  identity_name: h-umiya.Zup-DesktopAppUpdater
+  publisher_display_name: h-sumiya
+  publisher: CN=0CAEE31D-460E-4BC5-A8FA-16FA42C46226
