@@ -2,7 +2,7 @@ name: zup
 description: "Zup is a desktop updater for applications distributed as ZIP assets on GitHub Releases."
 publish_to: "none"
 
-version: 0.0.4
+version: 0.0.5
 
 environment:
   sdk: ^3.11.0-200.1.beta

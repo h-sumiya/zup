@@ -67,6 +67,7 @@ jobs:
             --store `
             --install-certificate false `
             --build-windows false `
+            --languages en-us,ja-jp,zh-cn `
             --version $env:MSIX_VERSION `
             --output-path dist `
             --output-name $outputName
