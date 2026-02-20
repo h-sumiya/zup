@@ -1,44 +1,65 @@
-# zup
+# Zup
 
-Windows向けの簡易 Obtainium 風ツールです。  
-GitHub Releases の ZIP アセットを対象にし、設定で pre-release を含める/含めないを選べます。
+<img src="assets/screenshot/hero.png" alt="Zup hero screen" width="100%">
 
-## 機能
+[日本語](README.ja.md) | [中文](README.zh.md)
 
-- GitHub URL を追加して管理（例: `https://github.com/owner/repo`）
-- SQLite で以下を保存
-  - リポジトリURL
-  - zipフィルタ正規表現
-  - インストール先ディレクトリ
-  - インストール済みバージョン
-  - 最後に使ったzip名
-- 正規表現 + `.zip` 条件で最新 release のアセットを選択（pre-release含む設定可）
-- zip をダウンロードして指定フォルダへ展開
-- Linux でもUI起動・確認可能
+## Product
 
-## 使い方
+Zup is a desktop updater for applications distributed as ZIP assets on GitHub Releases.
+You register a GitHub repository URL and a ZIP filename regex, then Zup checks the latest release and installs or updates the app into your target directory.
 
-1. `Add URL` で登録
-2. `GitHub URL`, `zip フィルタ正規表現`, `インストール先` を入力
-3. `Check latest` で解決されるバージョン/zipを確認
-4. `Install` / `Update` でダウンロード・展開
+### What It Does
 
-## 開発
+- Tracks app sources by GitHub repository URL.
+- Selects release ZIP assets with your regex rule.
+- Supports stable-only mode or pre-release-inclusive mode.
+- Installs or updates apps and stores installed version metadata.
+- Supports optional GitHub Personal Access Token for higher API limits and private repositories.
+- Provides UI localization in English, Japanese, and Chinese.
+
+### Screenshots
+
+![Zup home screen](assets/screenshot/01.png)
+![Zup detail screen](assets/screenshot/02.png)
+![Zup settings screen](assets/screenshot/03.png)
+
+## Development
+
+### Requirements
+
+- Flutter (beta channel recommended for this project)
+- Dart SDK compatible with `sdk: ^3.11.0-200.1.beta`
+- Desktop toolchain for your OS (Windows, macOS, or Linux)
+
+### Setup
 
 ```bash
 flutter pub get
-flutter analyze
+```
+
+### Run
+
+```bash
+flutter run -d windows
+# or: flutter run -d macos
+# or: flutter run -d linux
+```
+
+### Test and Format
+
+```bash
 flutter test
+dart format .
 ```
 
-LinuxでUI確認:
+### Optional (mise)
+
+If you use `mise`, the project includes tool/task definitions in `mise.toml`:
 
 ```bash
-flutter run -d linux
-```
-
-Linuxビルド確認:
-
-```bash
-flutter build linux --debug
+mise install
+mise run updateDeps
+mise run genAppIcons
+mise run format
 ```
