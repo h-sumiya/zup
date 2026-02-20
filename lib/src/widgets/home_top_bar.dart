@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zup/l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HomeTopBar extends StatelessWidget {
@@ -15,6 +16,7 @@ class HomeTopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final narrow = MediaQuery.sizeOf(context).width < 900;
 
     final title = Column(
@@ -31,7 +33,7 @@ class HomeTopBar extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          'GitHub Release ZIP Installer',
+          l10n.homeSubtitle,
           style: GoogleFonts.ibmPlexMono(
             fontSize: 15,
             color: Colors.white.withValues(alpha: 0.82),
@@ -46,7 +48,7 @@ class HomeTopBar extends StatelessWidget {
       children: [
         IconButton.filledTonal(
           onPressed: onSettings,
-          tooltip: 'Settings',
+          tooltip: l10n.settingsTitle,
           style: IconButton.styleFrom(
             backgroundColor: const Color(0x22102C45),
             foregroundColor: Colors.white,
@@ -61,7 +63,7 @@ class HomeTopBar extends StatelessWidget {
             backgroundColor: const Color(0x22102C45),
           ),
           icon: const Icon(Icons.refresh),
-          label: const Text('Reload'),
+          label: Text(l10n.homeReload),
         ),
         FilledButton.icon(
           onPressed: onAdd,
@@ -70,7 +72,7 @@ class HomeTopBar extends StatelessWidget {
             foregroundColor: const Color(0xFF09111E),
           ),
           icon: const Icon(Icons.add),
-          label: const Text('Add URL'),
+          label: Text(l10n.homeAddUrl),
         ),
       ],
     );

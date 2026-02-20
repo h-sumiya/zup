@@ -1,3 +1,5 @@
+import '../errors/app_exception.dart';
+
 class GitHubRepoRef {
   const GitHubRepoRef({required this.owner, required this.repo});
 
@@ -9,27 +11,25 @@ class GitHubRepoRef {
   static GitHubRepoRef fromUrl(String source) {
     final raw = source.trim();
     if (raw.isEmpty) {
-      throw const FormatException('GitHub URLが空です。');
+      throw const AppException(AppExceptionCode.githubUrlEmpty);
     }
 
     final normalized = raw.contains('://') ? raw : 'https://$raw';
     final uri = Uri.tryParse(normalized);
     if (uri == null || !uri.hasAuthority) {
-      throw const FormatException('GitHub URLの形式が不正です。');
+      throw const AppException(AppExceptionCode.githubUrlInvalidFormat);
     }
 
     final segments = uri.pathSegments
         .where((segment) => segment.isNotEmpty)
         .toList();
     if (segments.length < 2) {
-      throw const FormatException('owner/repo を含むGitHub URLを指定してください。');
+      throw const AppException(AppExceptionCode.githubUrlOwnerRepoMissing);
     }
 
     if (uri.host == 'api.github.com') {
       if (segments.length < 3 || segments.first != 'repos') {
-        throw const FormatException(
-          'GitHub API URLは /repos/{owner}/{repo} 形式のみ対応です。',
-        );
+        throw const AppException(AppExceptionCode.githubApiUrlUnsupported);
       }
       return GitHubRepoRef(
         owner: segments[1],
@@ -38,7 +38,7 @@ class GitHubRepoRef {
     }
 
     if (uri.host != 'github.com' && uri.host != 'www.github.com') {
-      throw const FormatException('github.com のURLのみ対応です。');
+      throw const AppException(AppExceptionCode.githubDomainUnsupported);
     }
 
     return GitHubRepoRef(
@@ -52,7 +52,7 @@ class GitHubRepoRef {
         ? value.substring(0, value.length - 4)
         : value;
     if (sanitized.isEmpty) {
-      throw const FormatException('repo名を解決できませんでした。');
+      throw const AppException(AppExceptionCode.githubRepoNameUnresolved);
     }
     return sanitized;
   }

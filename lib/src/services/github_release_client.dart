@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+import '../errors/app_exception.dart';
 import '../models/managed_app.dart';
 import '../models/release_info.dart';
 
@@ -29,27 +30,34 @@ class GitHubReleaseClient {
     final response = await _client.get(uri, headers: headers);
 
     if (response.statusCode == 404) {
-      throw Exception('latest release が見つかりません: ${app.owner}/${app.repo}');
+      throw AppException(
+        AppExceptionCode.githubLatestReleaseNotFound,
+        values: <String, Object?>{'repo': '${app.owner}/${app.repo}'},
+      );
     }
     if (response.statusCode == 403 &&
         response.body.toLowerCase().contains('rate limit')) {
-      throw Exception('GitHub API rate limitに達しました。時間を置いて再試行してください。');
+      throw const AppException(AppExceptionCode.githubRateLimitExceeded);
     }
     if (response.statusCode != 200) {
-      throw Exception(
-        'GitHub APIエラー(${response.statusCode}): ${response.reasonPhrase ?? response.body}',
+      throw AppException(
+        AppExceptionCode.githubApiError,
+        values: <String, Object?>{
+          'statusCode': response.statusCode,
+          'detail': response.reasonPhrase ?? response.body,
+        },
       );
     }
 
     final decoded = jsonDecode(response.body);
     if (decoded is! Map<String, dynamic>) {
-      throw const FormatException('GitHubレスポンスの解析に失敗しました。');
+      throw const AppException(AppExceptionCode.githubResponseParseFailed);
     }
 
     final regex = _compileRegex(app.assetRegex);
     final assetsRaw = decoded['assets'];
     if (assetsRaw is! List) {
-      throw const FormatException('release assetsの形式が不正です。');
+      throw const AppException(AppExceptionCode.githubAssetsInvalidFormat);
     }
 
     final matchingAssets = <ReleaseAssetInfo>[];
@@ -81,7 +89,10 @@ class GitHubReleaseClient {
     }
 
     if (matchingAssets.isEmpty) {
-      throw Exception('正規表現に一致するzipが見つかりません: ${app.assetRegex}');
+      throw AppException(
+        AppExceptionCode.githubAssetNoMatch,
+        values: <String, Object?>{'regex': app.assetRegex},
+      );
     }
 
     final tagName = decoded['tag_name']?.toString().trim() ?? '';
@@ -108,7 +119,10 @@ class GitHubReleaseClient {
     try {
       return RegExp(expression, caseSensitive: false);
     } catch (error) {
-      throw Exception('正規表現が不正です: $error');
+      throw AppException(
+        AppExceptionCode.githubAssetRegexInvalid,
+        values: <String, Object?>{'detail': error.toString()},
+      );
     }
   }
 }

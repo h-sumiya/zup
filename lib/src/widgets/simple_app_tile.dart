@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zup/l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../models/managed_app.dart';
@@ -19,7 +20,8 @@ class SimpleAppTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final version = app.installedVersion ?? '未インストール';
+    final l10n = AppLocalizations.of(context)!;
+    final version = app.installedVersion ?? l10n.commonNotInstalled;
 
     return Material(
       color: const Color(0x7F102640),
@@ -53,7 +55,7 @@ class SimpleAppTile extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'by ${app.owner}',
+                      l10n.commonByOwner(app.owner),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(

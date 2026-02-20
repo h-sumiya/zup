@@ -1,0 +1,255 @@
+{
+  "@@locale": "ja",
+  "appTitle": "Zup",
+  "settingsTitle": "設定",
+  "settingsSaved": "設定を保存しました。",
+
+  "homeSubtitle": "GitHub Release ZIP Installer",
+  "homeReload": "再読み込み",
+  "homeAddUrl": "URLを追加",
+
+  "commonSave": "保存",
+  "commonCancel": "キャンセル",
+  "commonClose": "閉じる",
+  "commonAdd": "追加",
+  "commonUpdate": "更新",
+  "commonInstall": "インストール",
+  "commonEdit": "編集",
+  "commonDelete": "削除",
+  "commonBrowse": "参照",
+  "commonNotInstalled": "未インストール",
+
+  "commonByOwner": "by {owner}",
+  "@commonByOwner": {
+    "placeholders": {
+      "owner": {}
+    }
+  },
+
+  "commonExitCode": "終了コード: {code}",
+  "@commonExitCode": {
+    "placeholders": {
+      "code": {}
+    }
+  },
+
+  "emptyStateTitle": "登録されたアプリはまだありません",
+  "emptyStateDescription": "GitHubのリポジトリURLを追加すると、latest release から ZIP を取得して展開できます。",
+
+  "sourceAdded": "ソースを追加しました。",
+  "errorLoadFailed": "読み込みに失敗しました: {detail}",
+  "@errorLoadFailed": {
+    "placeholders": {
+      "detail": {}
+    }
+  },
+
+  "errorSaveFailed": "保存に失敗しました: {detail}",
+  "@errorSaveFailed": {
+    "placeholders": {
+      "detail": {}
+    }
+  },
+
+  "errorDuplicateGitHubUrl": "同じGitHub URLはすでに登録されています。",
+
+  "errorActionFailed": "{action}に失敗しました: {detail}",
+  "@errorActionFailed": {
+    "placeholders": {
+      "action": {},
+      "detail": {}
+    }
+  },
+
+  "settingsLanguageSectionTitle": "言語",
+  "settingsLanguageSectionDescription": "「自動」はOSの言語に追従します。固定したい場合は明示的に選択してください。",
+  "settingsLanguageLabel": "表示言語",
+  "settingsLanguageAuto": "自動（システム）",
+  "settingsLanguageJapanese": "日本語",
+  "settingsLanguageEnglish": "English",
+  "settingsLanguageChinese": "中文",
+
+  "settingsDefaultInstallDirTitle": "デフォルトインストールディレクトリ",
+  "settingsDefaultInstallDirDescription": "新規登録時、空欄なら「デフォルトパス/アプリ名」を採用します。",
+  "settingsDefaultInstallDirExample": "例: C:\\Tools または /opt/tools",
+
+  "settingsGitHubTokenTitle": "GitHub Personal Access Token（任意）",
+  "settingsGitHubTokenDescription": "設定すると GitHub API 呼び出しに利用します。レート制限緩和や private repository へのアクセスに使えます。",
+  "settingsGitHubTokenHelper": "空欄で保存すると削除されます",
+
+  "editorTitleAdd": "GitHub URLを追加",
+  "editorTitleEdit": "登録を編集",
+  "editorGitHubUrlLabel": "GitHub URL",
+  "editorZipRegexLabel": "ZIP フィルタ正規表現",
+  "editorInstallDirLabel": "インストール先ディレクトリ",
+
+  "editorDefaultPathNotice": "空欄またはデフォルトパス指定時は「{basePath}/{repo}」を採用します。",
+  "@editorDefaultPathNotice": {
+    "placeholders": {
+      "basePath": {},
+      "repo": {}
+    }
+  },
+
+  "editorLatestReleaseNote": "注: 対象は latest release の ZIP アセットのみです。",
+  "editorErrorGitHubUrlRequired": "GitHub URLを入力してください。",
+  "editorErrorZipRegexRequired": "ZIPフィルタ用の正規表現を入力してください。",
+  "editorErrorInstallDirRequired": "インストール先が空です。設定画面でデフォルトディレクトリを指定するか、ここで入力してください。",
+
+  "detailPageTitle": "アプリ詳細",
+  "detailCheckLatest": "最新を確認",
+  "detailOpenLocation": "場所を開く",
+  "detailUpdatedAt": "最終更新: {dateTime}",
+  "@detailUpdatedAt": {
+    "placeholders": {
+      "dateTime": {}
+    }
+  },
+
+  "detailCurrentVersion": "現在: {version}",
+  "@detailCurrentVersion": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+
+  "detailLatestVersion": "最新: {version}",
+  "@detailLatestVersion": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+
+  "detailSelectedZip": "選択ZIP: {name}",
+  "@detailSelectedZip": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+
+  "detailMatchedAssetCount": "一致候補: {count}件",
+  "@detailMatchedAssetCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+
+  "detailUpdatedToVersion": "{app} を {version} に更新しました。",
+  "@detailUpdatedToVersion": {
+    "placeholders": {
+      "app": {},
+      "version": {}
+    }
+  },
+
+  "detailRegistrationUpdated": "登録を更新しました。",
+  "detailInstallDirNotFound": "インストール先フォルダが見つかりません: {path}",
+  "@detailInstallDirNotFound": {
+    "placeholders": {
+      "path": {}
+    }
+  },
+
+  "detailFailedToOpenExplorer": "エクスプローラを起動できませんでした: {detail}",
+  "@detailFailedToOpenExplorer": {
+    "placeholders": {
+      "detail": {}
+    }
+  },
+
+  "detailUnsupportedOpenLocation": "このOSでは場所を開く機能を利用できません。",
+  "detailDeleteDialogTitle": "登録を削除",
+  "detailDeleteTarget": "{target} を削除します。",
+  "@detailDeleteTarget": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+
+  "detailDeleteDialogDescription": "削除方法を選択してください。",
+  "detailInstallDestination": "インストール先: {path}",
+  "@detailInstallDestination": {
+    "placeholders": {
+      "path": {}
+    }
+  },
+
+  "detailDeleteRegistrationOnly": "登録のみ削除",
+  "detailDeleteRegistrationAndFolder": "フォルダも削除",
+  "detailDeleteWithFolderAction": "フォルダ削除",
+
+  "detailErrorFileOperationFailedAppRunning": "ファイル操作に失敗しました。対象アプリが実行中の可能性があります。終了して再試行してください。",
+  "detailErrorActionFailedAppRunning": "{action}に失敗しました。対象アプリが実行中の可能性があります。終了して再試行してください。",
+  "@detailErrorActionFailedAppRunning": {
+    "placeholders": {
+      "action": {}
+    }
+  },
+
+  "detailFieldGitHubUrl": "GitHub URL",
+  "detailFieldOwnerRepo": "Owner/Repo",
+  "detailFieldAssetRegex": "Asset Regex",
+  "detailFieldInstallDir": "Install Dir",
+  "detailFieldInstalledVersion": "Installed Version",
+  "detailFieldLastZip": "Last ZIP",
+  "detailFieldLaunchExe": "Launch EXE",
+  "detailFieldIconPath": "Icon Path",
+  "detailFieldUpdated": "Updated",
+
+  "errorGitHubUrlEmpty": "GitHub URLが空です。",
+  "errorGitHubUrlInvalidFormat": "GitHub URLの形式が不正です。",
+  "errorGitHubUrlOwnerRepoMissing": "owner/repo を含むGitHub URLを指定してください。",
+  "errorGitHubApiUrlUnsupported": "GitHub API URLは /repos/owner/repo 形式のみ対応です。",
+  "errorGitHubDomainUnsupported": "github.com のURLのみ対応です。",
+  "errorGitHubRepoNameUnresolved": "repo名を解決できませんでした。",
+
+  "errorGitHubLatestReleaseNotFound": "latest release が見つかりません: {repo}",
+  "@errorGitHubLatestReleaseNotFound": {
+    "placeholders": {
+      "repo": {}
+    }
+  },
+
+  "errorGitHubRateLimitExceeded": "GitHub API rate limitに達しました。時間を置いて再試行してください。",
+
+  "errorGitHubApi": "GitHub APIエラー({statusCode}): {detail}",
+  "@errorGitHubApi": {
+    "placeholders": {
+      "statusCode": {},
+      "detail": {}
+    }
+  },
+
+  "errorGitHubResponseParseFailed": "GitHubレスポンスの解析に失敗しました。",
+  "errorGitHubAssetsInvalidFormat": "release assetsの形式が不正です。",
+
+  "errorGitHubAssetNoMatch": "正規表現に一致するZIPが見つかりません: {regex}",
+  "@errorGitHubAssetNoMatch": {
+    "placeholders": {
+      "regex": {}
+    }
+  },
+
+  "errorGitHubAssetRegexInvalid": "正規表現が不正です: {detail}",
+  "@errorGitHubAssetRegexInvalid": {
+    "placeholders": {
+      "detail": {}
+    }
+  },
+
+  "errorZipDownloadFailed": "ZIPのダウンロードに失敗しました ({statusCode}): {assetName}",
+  "@errorZipDownloadFailed": {
+    "placeholders": {
+      "statusCode": {},
+      "assetName": {}
+    }
+  },
+
+  "errorZipEmpty": "ZIPが空です。",
+  "errorZipInvalidPath": "ZIP内に不正なパスが含まれています: {path}",
+  "@errorZipInvalidPath": {
+    "placeholders": {
+      "path": {}
+    }
+  }
+}

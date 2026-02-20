@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zup/l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class EmptyState extends StatelessWidget {
@@ -6,6 +7,8 @@ class EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       constraints: const BoxConstraints(maxWidth: 520),
       padding: const EdgeInsets.all(24),
@@ -20,7 +23,7 @@ class EmptyState extends StatelessWidget {
           const Icon(Icons.inventory_2_outlined, size: 44, color: Colors.white),
           const SizedBox(height: 14),
           Text(
-            '登録されたアプリはまだありません',
+            l10n.emptyStateTitle,
             textAlign: TextAlign.center,
             style: GoogleFonts.ibmPlexSans(
               fontSize: 20,
@@ -29,7 +32,7 @@ class EmptyState extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'GitHubのリポジトリURLを追加すると、\nlatest release から zip を取得して展開できます。',
+            l10n.emptyStateDescription,
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.white.withValues(alpha: 0.78)),
           ),

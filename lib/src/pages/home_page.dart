@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:zup/l10n/app_localizations.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
+import '../i18n/app_locale.dart';
 import '../models/managed_app.dart';
 import '../services/app_database.dart';
 import '../widgets/app_editor_dialog.dart';
@@ -12,7 +14,9 @@ import 'app_detail_page.dart';
 import 'settings_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, required this.onLocaleChanged});
+
+  final ValueChanged<Locale?> onLocaleChanged;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -23,9 +27,10 @@ class _HomePageState extends State<HomePage> {
 
   List<ManagedApp> _apps = const <ManagedApp>[];
   bool _loading = true;
-  String? _loadError;
+  String? _loadErrorDetail;
   String? _defaultInstallBaseDir;
   String? _gitHubToken;
+  String? _preferredLocaleCode;
 
   @override
   void initState() {
@@ -37,7 +42,7 @@ class _HomePageState extends State<HomePage> {
     if (withLoader && mounted) {
       setState(() {
         _loading = true;
-        _loadError = null;
+        _loadErrorDetail = null;
       });
     }
 
@@ -45,6 +50,9 @@ class _HomePageState extends State<HomePage> {
       final items = await _database.listApps();
       final defaultInstallDir = await _database.getDefaultInstallBaseDir();
       final gitHubToken = await _database.getGitHubToken();
+      final preferredLocaleCode = normalizeAppLocaleCode(
+        await _database.getPreferredLocaleCode(),
+      );
       if (!mounted) {
         return;
       }
@@ -52,14 +60,16 @@ class _HomePageState extends State<HomePage> {
         _apps = items;
         _defaultInstallBaseDir = defaultInstallDir;
         _gitHubToken = gitHubToken;
-        _loadError = null;
+        _preferredLocaleCode = preferredLocaleCode;
+        _loadErrorDetail = null;
       });
+      widget.onLocaleChanged(appLocaleFromCode(preferredLocaleCode));
     } catch (error) {
       if (!mounted) {
         return;
       }
       setState(() {
-        _loadError = '読み込みに失敗しました: $error';
+        _loadErrorDetail = error.toString();
       });
     } finally {
       if (withLoader && mounted) {
@@ -71,6 +81,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _openAddDialog() async {
+    final l10n = AppLocalizations.of(context)!;
     final draft = await showDialog<ManagedAppDraft>(
       context: context,
       builder: (_) =>
@@ -87,15 +98,17 @@ class _HomePageState extends State<HomePage> {
       if (!mounted) {
         return;
       }
-      _showSnackBar('ソースを追加しました。');
+      _showSnackBar(l10n.sourceAdded);
     } on DatabaseException catch (error) {
       final isDuplicate = error.toString().contains('UNIQUE constraint failed');
       _showSnackBar(
-        isDuplicate ? '同じGitHub URLはすでに登録されています。' : '保存に失敗しました: $error',
+        isDuplicate
+            ? l10n.errorDuplicateGitHubUrl
+            : l10n.errorSaveFailed(error.toString()),
         isError: true,
       );
     } catch (error) {
-      _showSnackBar('保存に失敗しました: $error', isError: true);
+      _showSnackBar(l10n.errorSaveFailed(error.toString()), isError: true);
     }
   }
 
@@ -123,6 +136,7 @@ class _HomePageState extends State<HomePage> {
         builder: (_) => SettingsPage(
           initialDefaultInstallDir: _defaultInstallBaseDir,
           initialGitHubToken: _gitHubToken,
+          initialLocaleCode: _preferredLocaleCode,
         ),
       ),
     );
@@ -134,7 +148,7 @@ class _HomePageState extends State<HomePage> {
     if (!mounted) {
       return;
     }
-    _showSnackBar('設定を保存しました。');
+    _showSnackBar(AppLocalizations.of(context)!.settingsSaved);
   }
 
   void _showSnackBar(String message, {bool isError = false}) {
@@ -154,6 +168,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: DecoratedBox(
         decoration: const BoxDecoration(
@@ -180,7 +196,7 @@ class _HomePageState extends State<HomePage> {
                       onSettings: _openSettings,
                     ),
                     const SizedBox(height: 20),
-                    if (_loadError != null)
+                    if (_loadErrorDetail != null)
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(12),
@@ -189,11 +205,11 @@ class _HomePageState extends State<HomePage> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
-                          _loadError!,
+                          l10n.errorLoadFailed(_loadErrorDetail!),
                           style: const TextStyle(color: Colors.white),
                         ),
                       ),
-                    if (_loadError != null) const SizedBox(height: 12),
+                    if (_loadErrorDetail != null) const SizedBox(height: 12),
                     Expanded(child: _buildBody()),
                   ],
                 ),

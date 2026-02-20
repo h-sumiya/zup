@@ -4,6 +4,7 @@ import 'package:archive/archive.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as p;
 
+import '../errors/app_exception.dart';
 import '../models/release_info.dart';
 
 class InstallResult {
@@ -35,14 +36,18 @@ class ZipInstaller {
     );
 
     if (response.statusCode != 200) {
-      throw Exception(
-        'zipのダウンロードに失敗しました (${response.statusCode}): ${asset.name}',
+      throw AppException(
+        AppExceptionCode.zipDownloadFailed,
+        values: <String, Object?>{
+          'statusCode': response.statusCode,
+          'assetName': asset.name,
+        },
       );
     }
 
     final archive = ZipDecoder().decodeBytes(response.bodyBytes, verify: true);
     if (archive.isEmpty) {
-      throw const FormatException('zipが空です。');
+      throw const AppException(AppExceptionCode.zipEmpty);
     }
 
     final writtenFiles = <String>[];
@@ -236,12 +241,18 @@ try {
         normalized == '..' ||
         normalized.startsWith('../') ||
         normalized.contains('/../')) {
-      throw FormatException('zip内に不正なパスが含まれています: $rawEntryPath');
+      throw AppException(
+        AppExceptionCode.zipInvalidPath,
+        values: <String, Object?>{'path': rawEntryPath},
+      );
     }
 
     final resolved = p.normalize(p.absolute(p.join(targetRoot, normalized)));
     if (!p.isWithin(targetRoot, resolved) && resolved != targetRoot) {
-      throw FormatException('zip内に不正なパスが含まれています: $rawEntryPath');
+      throw AppException(
+        AppExceptionCode.zipInvalidPath,
+        values: <String, Object?>{'path': rawEntryPath},
+      );
     }
     return resolved;
   }

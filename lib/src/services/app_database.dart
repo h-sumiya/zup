@@ -14,6 +14,7 @@ class AppDatabase {
   static final AppDatabase instance = AppDatabase._();
   static const String _defaultInstallDirKey = 'default_install_base_dir';
   static const String _githubTokenKey = 'github_token';
+  static const String _preferredLocaleKey = 'preferred_locale';
 
   Database? _database;
 
@@ -209,6 +210,19 @@ class AppDatabase {
       return;
     }
     await _writeSetting(_githubTokenKey, normalized);
+  }
+
+  Future<String?> getPreferredLocaleCode() async {
+    return _readSetting(_preferredLocaleKey);
+  }
+
+  Future<void> setPreferredLocaleCode(String? value) async {
+    final normalized = value?.trim() ?? '';
+    if (normalized.isEmpty) {
+      await _deleteSetting(_preferredLocaleKey);
+      return;
+    }
+    await _writeSetting(_preferredLocaleKey, normalized);
   }
 
   Future<void> _writeSetting(String key, String value) async {

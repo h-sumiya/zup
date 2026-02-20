@@ -1,7 +1,9 @@
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:zup/l10n/app_localizations.dart';
 import 'package:path/path.dart' as p;
 
+import '../i18n/localized_error.dart';
 import '../models/github_repo_ref.dart';
 import '../models/managed_app.dart';
 
@@ -61,16 +63,17 @@ class _AppEditorDialogState extends State<AppEditorDialog> {
   }
 
   void _submit() {
+    final l10n = AppLocalizations.of(context)!;
     final url = _urlController.text.trim();
     final regex = _regexController.text.trim();
     var installDir = _installDirController.text.trim();
 
     try {
       if (url.isEmpty) {
-        throw const FormatException('GitHub URLを入力してください。');
+        throw FormatException(l10n.editorErrorGitHubUrlRequired);
       }
       if (regex.isEmpty) {
-        throw const FormatException('zipフィルタ用の正規表現を入力してください。');
+        throw FormatException(l10n.editorErrorZipRegexRequired);
       }
 
       final repo = GitHubRepoRef.fromUrl(url);
@@ -79,9 +82,7 @@ class _AppEditorDialogState extends State<AppEditorDialog> {
       if (installDir.isEmpty) {
         final base = widget.defaultInstallBaseDir?.trim() ?? '';
         if (base.isEmpty) {
-          throw const FormatException(
-            'インストール先が空です。設定画面でデフォルトディレクトリを指定するか、ここで入力してください。',
-          );
+          throw FormatException(l10n.editorErrorInstallDirRequired);
         }
         installDir = p.join(base, repo.repo);
       } else if (widget.defaultInstallBaseDir != null &&
@@ -101,18 +102,19 @@ class _AppEditorDialogState extends State<AppEditorDialog> {
       );
     } catch (error) {
       setState(() {
-        _validationMessage = error.toString();
+        _validationMessage = localizeErrorMessage(context, error);
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isEdit = widget.existing != null;
 
     return AlertDialog(
       backgroundColor: const Color(0xFF182B44),
-      title: Text(isEdit ? '登録を編集' : 'GitHub URLを追加'),
+      title: Text(isEdit ? l10n.editorTitleEdit : l10n.editorTitleAdd),
       content: SizedBox(
         width: 580,
         child: SingleChildScrollView(
@@ -122,16 +124,16 @@ class _AppEditorDialogState extends State<AppEditorDialog> {
             children: [
               TextField(
                 controller: _urlController,
-                decoration: const InputDecoration(
-                  labelText: 'GitHub URL',
+                decoration: InputDecoration(
+                  labelText: l10n.editorGitHubUrlLabel,
                   hintText: 'https://github.com/owner/repo',
                 ),
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: _regexController,
-                decoration: const InputDecoration(
-                  labelText: 'zip フィルタ正規表現',
+                decoration: InputDecoration(
+                  labelText: l10n.editorZipRegexLabel,
                   hintText: r'.*(windows|win64).*\.zip$',
                 ),
               ),
@@ -142,8 +144,8 @@ class _AppEditorDialogState extends State<AppEditorDialog> {
                   Expanded(
                     child: TextField(
                       controller: _installDirController,
-                      decoration: const InputDecoration(
-                        labelText: 'インストール先ディレクトリ',
+                      decoration: InputDecoration(
+                        labelText: l10n.editorInstallDirLabel,
                         hintText: r'C:\Tools\my-app',
                       ),
                     ),
@@ -152,7 +154,7 @@ class _AppEditorDialogState extends State<AppEditorDialog> {
                   OutlinedButton.icon(
                     onPressed: _pickDirectory,
                     icon: const Icon(Icons.folder_open),
-                    label: const Text('Browse'),
+                    label: Text(l10n.commonBrowse),
                   ),
                 ],
               ),
@@ -160,7 +162,10 @@ class _AppEditorDialogState extends State<AppEditorDialog> {
                   widget.defaultInstallBaseDir!.isNotEmpty) ...[
                 const SizedBox(height: 10),
                 Text(
-                  '空欄またはデフォルトパス指定時は「${widget.defaultInstallBaseDir}/${_urlPreviewRepo()}」を採用します。',
+                  l10n.editorDefaultPathNotice(
+                    widget.defaultInstallBaseDir!,
+                    _urlPreviewRepo(),
+                  ),
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.72),
                     fontSize: 12,
@@ -169,7 +174,7 @@ class _AppEditorDialogState extends State<AppEditorDialog> {
               ],
               const SizedBox(height: 10),
               Text(
-                '注: 対象は latest release の zip アセットのみです。',
+                l10n.editorLatestReleaseNote,
                 style: TextStyle(
                   color: Colors.white.withValues(alpha: 0.65),
                   fontSize: 12,
@@ -189,7 +194,7 @@ class _AppEditorDialogState extends State<AppEditorDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('キャンセル'),
+          child: Text(l10n.commonCancel),
         ),
         FilledButton.icon(
           onPressed: _submit,
@@ -198,7 +203,7 @@ class _AppEditorDialogState extends State<AppEditorDialog> {
             foregroundColor: const Color(0xFF09111E),
           ),
           icon: const Icon(Icons.save),
-          label: Text(isEdit ? '更新' : '追加'),
+          label: Text(isEdit ? l10n.commonUpdate : l10n.commonAdd),
         ),
       ],
     );

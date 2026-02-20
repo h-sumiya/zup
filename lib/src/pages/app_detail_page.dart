@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:zup/l10n/app_localizations.dart';
 
+import '../i18n/localized_error.dart';
 import '../models/managed_app.dart';
 import '../services/app_database.dart';
 import '../services/github_release_client.dart';
@@ -94,33 +96,23 @@ class _AppDetailPageState extends State<AppDetailPage> {
   }
 
   String _formatTaskError(Object error, {String? actionLabel}) {
+    final l10n = AppLocalizations.of(context)!;
     if (_isRunningAppFileLockError(error)) {
       if (actionLabel == null || actionLabel.isEmpty) {
-        return 'ファイル操作に失敗しました。対象アプリが実行中の可能性があります。終了して再試行してください。';
+        return l10n.detailErrorFileOperationFailedAppRunning;
       }
-      return '$actionLabelに失敗しました。対象アプリが実行中の可能性があります。終了して再試行してください。';
+      return l10n.detailErrorActionFailedAppRunning(actionLabel);
     }
 
     final detail = _normalizeErrorMessage(error);
     if (actionLabel == null || actionLabel.isEmpty) {
       return detail;
     }
-    return '$actionLabelに失敗しました: $detail';
+    return l10n.errorActionFailed(actionLabel, detail);
   }
 
   String _normalizeErrorMessage(Object error) {
-    final raw = error.toString();
-    const prefixes = <String>[
-      'Exception: ',
-      'FileSystemException: ',
-      'ProcessException: ',
-    ];
-    for (final prefix in prefixes) {
-      if (raw.startsWith(prefix)) {
-        return raw.substring(prefix.length).trim();
-      }
-    }
-    return raw;
+    return localizeErrorMessage(context, error);
   }
 
   bool _isRunningAppFileLockError(Object error) {
@@ -150,11 +142,12 @@ class _AppDetailPageState extends State<AppDetailPage> {
 
   Future<void> _checkLatestRelease() async {
     await _withBusy(() async {
+      final l10n = AppLocalizations.of(context)!;
       final release = await _gitHubClient.fetchLatestRelease(_app);
       if (!mounted) {
         return;
       }
-      final current = _app.installedVersion ?? '未インストール';
+      final current = _app.installedVersion ?? l10n.commonNotInstalled;
 
       await showDialog<void>(
         context: context,
@@ -166,21 +159,21 @@ class _AppDetailPageState extends State<AppDetailPage> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('現在: $current'),
+                Text(l10n.detailCurrentVersion(current)),
                 const SizedBox(height: 8),
-                Text('最新: ${release.version}'),
+                Text(l10n.detailLatestVersion(release.version)),
                 const SizedBox(height: 8),
-                Text('選択zip: ${release.selectedAsset.name}'),
+                Text(l10n.detailSelectedZip(release.selectedAsset.name)),
                 if (release.matchedAssetCount > 1) ...[
                   const SizedBox(height: 8),
-                  Text('一致候補: ${release.matchedAssetCount}件'),
+                  Text(l10n.detailMatchedAssetCount(release.matchedAssetCount)),
                 ],
               ],
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('閉じる'),
+                child: Text(l10n.commonClose),
               ),
             ],
           );
@@ -190,22 +183,33 @@ class _AppDetailPageState extends State<AppDetailPage> {
   }
 
   Future<void> _installOrUpdate() async {
-    await _withBusy(() async {
-      final release = await _gitHubClient.fetchLatestRelease(_app);
-      final result = await _installer.install(
-        installDirectory: _app.installDir,
-        asset: release.selectedAsset,
-      );
-      await _database.updateInstalledVersion(
-        _app.id,
-        version: release.version,
-        assetName: release.selectedAsset.name,
-        iconPath: result.iconPath,
-        launchExePath: result.launchExePath,
-      );
-      await _refreshApp();
-      _showSnackBar('${_app.owner}/${_app.repo} を ${release.version} に更新しました。');
-    }, actionLabel: _app.installedVersion == null ? 'インストール' : '更新');
+    await _withBusy(
+      () async {
+        final l10n = AppLocalizations.of(context)!;
+        final release = await _gitHubClient.fetchLatestRelease(_app);
+        final result = await _installer.install(
+          installDirectory: _app.installDir,
+          asset: release.selectedAsset,
+        );
+        await _database.updateInstalledVersion(
+          _app.id,
+          version: release.version,
+          assetName: release.selectedAsset.name,
+          iconPath: result.iconPath,
+          launchExePath: result.launchExePath,
+        );
+        await _refreshApp();
+        _showSnackBar(
+          l10n.detailUpdatedToVersion(
+            '${_app.owner}/${_app.repo}',
+            release.version,
+          ),
+        );
+      },
+      actionLabel: _app.installedVersion == null
+          ? _actionInstall
+          : _actionUpdate,
+    );
   }
 
   Future<void> _openEditor() async {
@@ -222,23 +226,26 @@ class _AppDetailPageState extends State<AppDetailPage> {
     }
 
     await _withBusy(() async {
+      final l10n = AppLocalizations.of(context)!;
       await _database.updateApp(_app.id, draft);
       await _refreshApp();
-      _showSnackBar('登録を更新しました。');
-    }, actionLabel: '編集');
+      _showSnackBar(l10n.detailRegistrationUpdated);
+    }, actionLabel: _actionEdit);
   }
 
   Future<void> _openInstallDirectory() async {
     await _withBusy(() async {
+      final l10n = AppLocalizations.of(context)!;
       final directory = Directory(_app.installDir);
       if (!await directory.exists()) {
-        throw Exception('インストール先フォルダが見つかりません: ${_app.installDir}');
+        throw Exception(l10n.detailInstallDirNotFound(_app.installDir));
       }
       await _openDirectoryInExplorer(directory.absolute.path);
-    }, actionLabel: '場所の表示');
+    }, actionLabel: _actionOpenLocation);
   }
 
   Future<void> _openDirectoryInExplorer(String path) async {
+    final l10n = AppLocalizations.of(context)!;
     if (Platform.isWindows) {
       final result = await Process.run('explorer', [path]);
       final stderr = (result.stderr ?? '').toString().trim();
@@ -246,8 +253,10 @@ class _AppDetailPageState extends State<AppDetailPage> {
       if (result.exitCode == 0 || (result.exitCode == 1 && stderr.isEmpty)) {
         return;
       }
-      final detail = stderr.isEmpty ? '終了コード: ${result.exitCode}' : stderr;
-      throw Exception('エクスプローラを起動できませんでした: $detail');
+      final detail = stderr.isEmpty
+          ? l10n.commonExitCode(result.exitCode)
+          : stderr;
+      throw Exception(l10n.detailFailedToOpenExplorer(detail));
     }
 
     ProcessResult result;
@@ -256,13 +265,15 @@ class _AppDetailPageState extends State<AppDetailPage> {
     } else if (Platform.isLinux) {
       result = await Process.run('xdg-open', [path]);
     } else {
-      throw UnsupportedError('このOSでは場所を開く機能を利用できません。');
+      throw UnsupportedError(l10n.detailUnsupportedOpenLocation);
     }
 
     if (result.exitCode != 0) {
       final stderr = (result.stderr ?? '').toString().trim();
-      final detail = stderr.isEmpty ? '終了コード: ${result.exitCode}' : stderr;
-      throw Exception('エクスプローラを起動できませんでした: $detail');
+      final detail = stderr.isEmpty
+          ? l10n.commonExitCode(result.exitCode)
+          : stderr;
+      throw Exception(l10n.detailFailedToOpenExplorer(detail));
     }
   }
 
@@ -275,22 +286,23 @@ class _AppDetailPageState extends State<AppDetailPage> {
   }
 
   Future<_DeleteMode?> _askDeleteMode() {
+    final l10n = AppLocalizations.of(context)!;
     return showDialog<_DeleteMode>(
       context: context,
       builder: (context) {
         return AlertDialog(
           backgroundColor: const Color(0xFF1A2C45),
-          title: const Text('登録を削除'),
+          title: Text(l10n.detailDeleteDialogTitle),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('${_app.owner}/${_app.repo} を削除します。'),
+              Text(l10n.detailDeleteTarget('${_app.owner}/${_app.repo}')),
               const SizedBox(height: 8),
-              const Text('削除方法を選択してください。'),
+              Text(l10n.detailDeleteDialogDescription),
               const SizedBox(height: 8),
               Text(
-                'インストール先: ${_app.installDir}',
+                l10n.detailInstallDestination(_app.installDir),
                 style: TextStyle(color: Colors.white.withValues(alpha: 0.76)),
               ),
             ],
@@ -298,12 +310,12 @@ class _AppDetailPageState extends State<AppDetailPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('キャンセル'),
+              child: Text(l10n.commonCancel),
             ),
             OutlinedButton(
               onPressed: () =>
                   Navigator.pop(context, _DeleteMode.registrationOnly),
-              child: const Text('登録のみ削除'),
+              child: Text(l10n.detailDeleteRegistrationOnly),
             ),
             FilledButton(
               style: FilledButton.styleFrom(
@@ -311,7 +323,7 @@ class _AppDetailPageState extends State<AppDetailPage> {
               ),
               onPressed: () =>
                   Navigator.pop(context, _DeleteMode.registrationAndFolder),
-              child: const Text('フォルダも削除'),
+              child: Text(l10n.detailDeleteRegistrationAndFolder),
             ),
           ],
         );
@@ -336,7 +348,7 @@ class _AppDetailPageState extends State<AppDetailPage> {
         return;
       }
       Navigator.pop(context);
-    }, actionLabel: deleteFolder ? 'フォルダ削除' : '削除');
+    }, actionLabel: deleteFolder ? _actionDeleteFolder : _actionDelete);
   }
 
   void _showSnackBar(String message, {bool isError = false}) {
@@ -356,7 +368,8 @@ class _AppDetailPageState extends State<AppDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final installed = _app.installedVersion ?? '未インストール';
+    final l10n = AppLocalizations.of(context)!;
+    final installed = _app.installedVersion ?? l10n.commonNotInstalled;
 
     return Scaffold(
       body: DecoratedBox(
@@ -390,7 +403,7 @@ class _AppDetailPageState extends State<AppDetailPage> {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              'アプリ詳細',
+                              l10n.detailPageTitle,
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
                           ],
@@ -418,7 +431,7 @@ class _AppDetailPageState extends State<AppDetailPage> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      'by ${_app.owner}',
+                                      l10n.commonByOwner(_app.owner),
                                       style: TextStyle(
                                         color: Colors.white.withValues(
                                           alpha: 0.72,
@@ -435,7 +448,9 @@ class _AppDetailPageState extends State<AppDetailPage> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      '最終更新: ${formatDateTimeLocal(_app.updatedAt)}',
+                                      l10n.detailUpdatedAt(
+                                        formatDateTimeLocal(_app.updatedAt),
+                                      ),
                                       style: TextStyle(
                                         color: Colors.white.withValues(
                                           alpha: 0.66,
@@ -465,7 +480,7 @@ class _AppDetailPageState extends State<AppDetailPage> {
                             OutlinedButton.icon(
                               onPressed: _busy ? null : _checkLatestRelease,
                               icon: const Icon(Icons.search),
-                              label: const Text('Check latest'),
+                              label: Text(l10n.detailCheckLatest),
                             ),
                             FilledButton.icon(
                               onPressed: _busy ? null : _installOrUpdate,
@@ -476,19 +491,19 @@ class _AppDetailPageState extends State<AppDetailPage> {
                               icon: const Icon(Icons.download),
                               label: Text(
                                 _app.installedVersion == null
-                                    ? 'Install'
-                                    : 'Update',
+                                    ? l10n.commonInstall
+                                    : l10n.commonUpdate,
                               ),
                             ),
                             OutlinedButton.icon(
                               onPressed: _busy ? null : _openInstallDirectory,
                               icon: const Icon(Icons.folder_open),
-                              label: const Text('場所を開く'),
+                              label: Text(l10n.detailOpenLocation),
                             ),
                             TextButton.icon(
                               onPressed: _busy ? null : _openEditor,
                               icon: const Icon(Icons.edit),
-                              label: const Text('Edit'),
+                              label: Text(l10n.commonEdit),
                             ),
                             TextButton.icon(
                               onPressed: _busy ? null : _deleteApp,
@@ -496,7 +511,7 @@ class _AppDetailPageState extends State<AppDetailPage> {
                                 foregroundColor: const Color(0xFFFFB9C0),
                               ),
                               icon: const Icon(Icons.delete_outline),
-                              label: const Text('Delete'),
+                              label: Text(l10n.commonDelete),
                             ),
                           ],
                         ),
@@ -506,39 +521,41 @@ class _AppDetailPageState extends State<AppDetailPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               _DetailRow(
-                                label: 'GitHub URL',
+                                label: l10n.detailFieldGitHubUrl,
                                 value: _app.repoUrl,
                               ),
                               _DetailRow(
-                                label: 'Owner/Repo',
+                                label: l10n.detailFieldOwnerRepo,
                                 value: '${_app.owner}/${_app.repo}',
                               ),
                               _DetailRow(
-                                label: 'Asset Regex',
+                                label: l10n.detailFieldAssetRegex,
                                 value: _app.assetRegex,
                               ),
                               _DetailRow(
-                                label: 'Install Dir',
+                                label: l10n.detailFieldInstallDir,
                                 value: _app.installDir,
                               ),
                               _DetailRow(
-                                label: 'Installed Version',
-                                value: _app.installedVersion ?? '未インストール',
+                                label: l10n.detailFieldInstalledVersion,
+                                value:
+                                    _app.installedVersion ??
+                                    l10n.commonNotInstalled,
                               ),
                               _DetailRow(
-                                label: 'Last zip',
+                                label: l10n.detailFieldLastZip,
                                 value: _app.assetName ?? '-',
                               ),
                               _DetailRow(
-                                label: 'Launch EXE',
+                                label: l10n.detailFieldLaunchExe,
                                 value: _app.launchExePath ?? '-',
                               ),
                               _DetailRow(
-                                label: 'Icon Path',
+                                label: l10n.detailFieldIconPath,
                                 value: _app.iconPath ?? '-',
                               ),
                               _DetailRow(
-                                label: 'Updated',
+                                label: l10n.detailFieldUpdated,
                                 value: formatDateTimeLocal(_app.updatedAt),
                               ),
                             ],
@@ -555,6 +572,20 @@ class _AppDetailPageState extends State<AppDetailPage> {
       ),
     );
   }
+
+  String get _actionInstall => AppLocalizations.of(context)!.commonInstall;
+
+  String get _actionUpdate => AppLocalizations.of(context)!.commonUpdate;
+
+  String get _actionEdit => AppLocalizations.of(context)!.commonEdit;
+
+  String get _actionOpenLocation =>
+      AppLocalizations.of(context)!.detailOpenLocation;
+
+  String get _actionDelete => AppLocalizations.of(context)!.commonDelete;
+
+  String get _actionDeleteFolder =>
+      AppLocalizations.of(context)!.detailDeleteWithFolderAction;
 }
 
 class _DetailCard extends StatelessWidget {

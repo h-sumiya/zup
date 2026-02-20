@@ -1,0 +1,255 @@
+{
+  "@@locale": "en",
+  "appTitle": "Zup",
+  "settingsTitle": "Settings",
+  "settingsSaved": "Settings saved.",
+
+  "homeSubtitle": "GitHub Release ZIP Installer",
+  "homeReload": "Reload",
+  "homeAddUrl": "Add URL",
+
+  "commonSave": "Save",
+  "commonCancel": "Cancel",
+  "commonClose": "Close",
+  "commonAdd": "Add",
+  "commonUpdate": "Update",
+  "commonInstall": "Install",
+  "commonEdit": "Edit",
+  "commonDelete": "Delete",
+  "commonBrowse": "Browse",
+  "commonNotInstalled": "Not installed",
+
+  "commonByOwner": "by {owner}",
+  "@commonByOwner": {
+    "placeholders": {
+      "owner": {}
+    }
+  },
+
+  "commonExitCode": "Exit code: {code}",
+  "@commonExitCode": {
+    "placeholders": {
+      "code": {}
+    }
+  },
+
+  "emptyStateTitle": "No apps registered yet",
+  "emptyStateDescription": "Add a GitHub repository URL to fetch and extract ZIP assets from the latest release.",
+
+  "sourceAdded": "Source added.",
+  "errorLoadFailed": "Failed to load: {detail}",
+  "@errorLoadFailed": {
+    "placeholders": {
+      "detail": {}
+    }
+  },
+
+  "errorSaveFailed": "Failed to save: {detail}",
+  "@errorSaveFailed": {
+    "placeholders": {
+      "detail": {}
+    }
+  },
+
+  "errorDuplicateGitHubUrl": "The same GitHub URL is already registered.",
+
+  "errorActionFailed": "{action} failed: {detail}",
+  "@errorActionFailed": {
+    "placeholders": {
+      "action": {},
+      "detail": {}
+    }
+  },
+
+  "settingsLanguageSectionTitle": "Language",
+  "settingsLanguageSectionDescription": "Use Auto to follow your OS language. Or choose a specific language.",
+  "settingsLanguageLabel": "Display language",
+  "settingsLanguageAuto": "Auto (system)",
+  "settingsLanguageJapanese": "Japanese",
+  "settingsLanguageEnglish": "English",
+  "settingsLanguageChinese": "Chinese",
+
+  "settingsDefaultInstallDirTitle": "Default install directory",
+  "settingsDefaultInstallDirDescription": "If install path is empty when registering an app, \"default path/app name\" will be used.",
+  "settingsDefaultInstallDirExample": "Example: C:\\Tools or /opt/tools",
+
+  "settingsGitHubTokenTitle": "GitHub Personal Access Token (optional)",
+  "settingsGitHubTokenDescription": "If set, this token is used for GitHub API calls. Useful for higher rate limits and private repositories.",
+  "settingsGitHubTokenHelper": "Saving with empty value removes the token",
+
+  "editorTitleAdd": "Add GitHub URL",
+  "editorTitleEdit": "Edit registration",
+  "editorGitHubUrlLabel": "GitHub URL",
+  "editorZipRegexLabel": "ZIP filter regex",
+  "editorInstallDirLabel": "Install directory",
+
+  "editorDefaultPathNotice": "If left empty or set to the default path, \"{basePath}/{repo}\" will be used.",
+  "@editorDefaultPathNotice": {
+    "placeholders": {
+      "basePath": {},
+      "repo": {}
+    }
+  },
+
+  "editorLatestReleaseNote": "Note: only ZIP assets from the latest release are supported.",
+  "editorErrorGitHubUrlRequired": "Please enter a GitHub URL.",
+  "editorErrorZipRegexRequired": "Please enter a regex for ZIP filtering.",
+  "editorErrorInstallDirRequired": "Install directory is empty. Set a default directory in Settings or enter one here.",
+
+  "detailPageTitle": "App details",
+  "detailCheckLatest": "Check latest",
+  "detailOpenLocation": "Open location",
+  "detailUpdatedAt": "Updated: {dateTime}",
+  "@detailUpdatedAt": {
+    "placeholders": {
+      "dateTime": {}
+    }
+  },
+
+  "detailCurrentVersion": "Current: {version}",
+  "@detailCurrentVersion": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+
+  "detailLatestVersion": "Latest: {version}",
+  "@detailLatestVersion": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+
+  "detailSelectedZip": "Selected ZIP: {name}",
+  "@detailSelectedZip": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+
+  "detailMatchedAssetCount": "Matched assets: {count}",
+  "@detailMatchedAssetCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+
+  "detailUpdatedToVersion": "Updated {app} to {version}.",
+  "@detailUpdatedToVersion": {
+    "placeholders": {
+      "app": {},
+      "version": {}
+    }
+  },
+
+  "detailRegistrationUpdated": "Registration updated.",
+  "detailInstallDirNotFound": "Install directory not found: {path}",
+  "@detailInstallDirNotFound": {
+    "placeholders": {
+      "path": {}
+    }
+  },
+
+  "detailFailedToOpenExplorer": "Failed to open file explorer: {detail}",
+  "@detailFailedToOpenExplorer": {
+    "placeholders": {
+      "detail": {}
+    }
+  },
+
+  "detailUnsupportedOpenLocation": "Open location is not supported on this OS.",
+  "detailDeleteDialogTitle": "Delete registration",
+  "detailDeleteTarget": "Delete {target}.",
+  "@detailDeleteTarget": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+
+  "detailDeleteDialogDescription": "Choose how to delete.",
+  "detailInstallDestination": "Install destination: {path}",
+  "@detailInstallDestination": {
+    "placeholders": {
+      "path": {}
+    }
+  },
+
+  "detailDeleteRegistrationOnly": "Delete registration only",
+  "detailDeleteRegistrationAndFolder": "Delete folder too",
+  "detailDeleteWithFolderAction": "Delete folder",
+
+  "detailErrorFileOperationFailedAppRunning": "File operation failed. The app may be running. Close it and try again.",
+  "detailErrorActionFailedAppRunning": "{action} failed. The app may be running. Close it and try again.",
+  "@detailErrorActionFailedAppRunning": {
+    "placeholders": {
+      "action": {}
+    }
+  },
+
+  "detailFieldGitHubUrl": "GitHub URL",
+  "detailFieldOwnerRepo": "Owner/Repo",
+  "detailFieldAssetRegex": "Asset Regex",
+  "detailFieldInstallDir": "Install Dir",
+  "detailFieldInstalledVersion": "Installed Version",
+  "detailFieldLastZip": "Last ZIP",
+  "detailFieldLaunchExe": "Launch EXE",
+  "detailFieldIconPath": "Icon Path",
+  "detailFieldUpdated": "Updated",
+
+  "errorGitHubUrlEmpty": "GitHub URL is empty.",
+  "errorGitHubUrlInvalidFormat": "GitHub URL format is invalid.",
+  "errorGitHubUrlOwnerRepoMissing": "Specify a GitHub URL that includes owner/repo.",
+  "errorGitHubApiUrlUnsupported": "GitHub API URL supports only /repos/owner/repo format.",
+  "errorGitHubDomainUnsupported": "Only github.com URLs are supported.",
+  "errorGitHubRepoNameUnresolved": "Could not resolve the repository name.",
+
+  "errorGitHubLatestReleaseNotFound": "Latest release not found: {repo}",
+  "@errorGitHubLatestReleaseNotFound": {
+    "placeholders": {
+      "repo": {}
+    }
+  },
+
+  "errorGitHubRateLimitExceeded": "GitHub API rate limit exceeded. Please retry later.",
+
+  "errorGitHubApi": "GitHub API error ({statusCode}): {detail}",
+  "@errorGitHubApi": {
+    "placeholders": {
+      "statusCode": {},
+      "detail": {}
+    }
+  },
+
+  "errorGitHubResponseParseFailed": "Failed to parse GitHub response.",
+  "errorGitHubAssetsInvalidFormat": "Release assets format is invalid.",
+
+  "errorGitHubAssetNoMatch": "No ZIP matched the regex: {regex}",
+  "@errorGitHubAssetNoMatch": {
+    "placeholders": {
+      "regex": {}
+    }
+  },
+
+  "errorGitHubAssetRegexInvalid": "Regex is invalid: {detail}",
+  "@errorGitHubAssetRegexInvalid": {
+    "placeholders": {
+      "detail": {}
+    }
+  },
+
+  "errorZipDownloadFailed": "Failed to download ZIP ({statusCode}): {assetName}",
+  "@errorZipDownloadFailed": {
+    "placeholders": {
+      "statusCode": {},
+      "assetName": {}
+    }
+  },
+
+  "errorZipEmpty": "ZIP is empty.",
+  "errorZipInvalidPath": "ZIP contains an invalid path: {path}",
+  "@errorZipInvalidPath": {
+    "placeholders": {
+      "path": {}
+    }
+  }
+}

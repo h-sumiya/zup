@@ -1,0 +1,255 @@
+{
+  "@@locale": "zh",
+  "appTitle": "Zup",
+  "settingsTitle": "设置",
+  "settingsSaved": "设置已保存。",
+
+  "homeSubtitle": "GitHub Release ZIP Installer",
+  "homeReload": "刷新",
+  "homeAddUrl": "添加 URL",
+
+  "commonSave": "保存",
+  "commonCancel": "取消",
+  "commonClose": "关闭",
+  "commonAdd": "添加",
+  "commonUpdate": "更新",
+  "commonInstall": "安装",
+  "commonEdit": "编辑",
+  "commonDelete": "删除",
+  "commonBrowse": "浏览",
+  "commonNotInstalled": "未安装",
+
+  "commonByOwner": "by {owner}",
+  "@commonByOwner": {
+    "placeholders": {
+      "owner": {}
+    }
+  },
+
+  "commonExitCode": "退出码: {code}",
+  "@commonExitCode": {
+    "placeholders": {
+      "code": {}
+    }
+  },
+
+  "emptyStateTitle": "尚未注册任何应用",
+  "emptyStateDescription": "添加 GitHub 仓库 URL 后，可以从 latest release 下载并解压 ZIP 资源。",
+
+  "sourceAdded": "已添加来源。",
+  "errorLoadFailed": "加载失败: {detail}",
+  "@errorLoadFailed": {
+    "placeholders": {
+      "detail": {}
+    }
+  },
+
+  "errorSaveFailed": "保存失败: {detail}",
+  "@errorSaveFailed": {
+    "placeholders": {
+      "detail": {}
+    }
+  },
+
+  "errorDuplicateGitHubUrl": "相同的 GitHub URL 已注册。",
+
+  "errorActionFailed": "{action}失败: {detail}",
+  "@errorActionFailed": {
+    "placeholders": {
+      "action": {},
+      "detail": {}
+    }
+  },
+
+  "settingsLanguageSectionTitle": "语言",
+  "settingsLanguageSectionDescription": "选择“自动”将跟随系统语言，也可以手动固定语言。",
+  "settingsLanguageLabel": "显示语言",
+  "settingsLanguageAuto": "自动（系统）",
+  "settingsLanguageJapanese": "日本語",
+  "settingsLanguageEnglish": "English",
+  "settingsLanguageChinese": "中文",
+
+  "settingsDefaultInstallDirTitle": "默认安装目录",
+  "settingsDefaultInstallDirDescription": "新建注册时若安装路径为空，将使用“默认路径/应用名”。",
+  "settingsDefaultInstallDirExample": "例如: C:\\Tools 或 /opt/tools",
+
+  "settingsGitHubTokenTitle": "GitHub Personal Access Token（可选）",
+  "settingsGitHubTokenDescription": "设置后将用于 GitHub API 调用，可提升限流额度并访问私有仓库。",
+  "settingsGitHubTokenHelper": "留空保存会删除该 Token",
+
+  "editorTitleAdd": "添加 GitHub URL",
+  "editorTitleEdit": "编辑注册",
+  "editorGitHubUrlLabel": "GitHub URL",
+  "editorZipRegexLabel": "ZIP 过滤正则",
+  "editorInstallDirLabel": "安装目录",
+
+  "editorDefaultPathNotice": "若留空或与默认路径相同，将使用“{basePath}/{repo}”。",
+  "@editorDefaultPathNotice": {
+    "placeholders": {
+      "basePath": {},
+      "repo": {}
+    }
+  },
+
+  "editorLatestReleaseNote": "注意: 仅支持 latest release 的 ZIP 资源。",
+  "editorErrorGitHubUrlRequired": "请输入 GitHub URL。",
+  "editorErrorZipRegexRequired": "请输入 ZIP 过滤正则。",
+  "editorErrorInstallDirRequired": "安装目录为空。请在设置中指定默认目录，或在此处输入。",
+
+  "detailPageTitle": "应用详情",
+  "detailCheckLatest": "检查最新版本",
+  "detailOpenLocation": "打开位置",
+  "detailUpdatedAt": "最后更新: {dateTime}",
+  "@detailUpdatedAt": {
+    "placeholders": {
+      "dateTime": {}
+    }
+  },
+
+  "detailCurrentVersion": "当前: {version}",
+  "@detailCurrentVersion": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+
+  "detailLatestVersion": "最新: {version}",
+  "@detailLatestVersion": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+
+  "detailSelectedZip": "已选 ZIP: {name}",
+  "@detailSelectedZip": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+
+  "detailMatchedAssetCount": "匹配候选: {count}",
+  "@detailMatchedAssetCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+
+  "detailUpdatedToVersion": "已将 {app} 更新到 {version}。",
+  "@detailUpdatedToVersion": {
+    "placeholders": {
+      "app": {},
+      "version": {}
+    }
+  },
+
+  "detailRegistrationUpdated": "注册信息已更新。",
+  "detailInstallDirNotFound": "未找到安装目录: {path}",
+  "@detailInstallDirNotFound": {
+    "placeholders": {
+      "path": {}
+    }
+  },
+
+  "detailFailedToOpenExplorer": "无法打开文件管理器: {detail}",
+  "@detailFailedToOpenExplorer": {
+    "placeholders": {
+      "detail": {}
+    }
+  },
+
+  "detailUnsupportedOpenLocation": "当前操作系统不支持打开位置功能。",
+  "detailDeleteDialogTitle": "删除注册",
+  "detailDeleteTarget": "将删除 {target}。",
+  "@detailDeleteTarget": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+
+  "detailDeleteDialogDescription": "请选择删除方式。",
+  "detailInstallDestination": "安装位置: {path}",
+  "@detailInstallDestination": {
+    "placeholders": {
+      "path": {}
+    }
+  },
+
+  "detailDeleteRegistrationOnly": "仅删除注册",
+  "detailDeleteRegistrationAndFolder": "同时删除文件夹",
+  "detailDeleteWithFolderAction": "删除文件夹",
+
+  "detailErrorFileOperationFailedAppRunning": "文件操作失败。目标应用可能仍在运行，请先关闭后重试。",
+  "detailErrorActionFailedAppRunning": "{action}失败。目标应用可能仍在运行，请先关闭后重试。",
+  "@detailErrorActionFailedAppRunning": {
+    "placeholders": {
+      "action": {}
+    }
+  },
+
+  "detailFieldGitHubUrl": "GitHub URL",
+  "detailFieldOwnerRepo": "Owner/Repo",
+  "detailFieldAssetRegex": "Asset Regex",
+  "detailFieldInstallDir": "Install Dir",
+  "detailFieldInstalledVersion": "Installed Version",
+  "detailFieldLastZip": "Last ZIP",
+  "detailFieldLaunchExe": "Launch EXE",
+  "detailFieldIconPath": "Icon Path",
+  "detailFieldUpdated": "Updated",
+
+  "errorGitHubUrlEmpty": "GitHub URL 为空。",
+  "errorGitHubUrlInvalidFormat": "GitHub URL 格式不正确。",
+  "errorGitHubUrlOwnerRepoMissing": "请输入包含 owner/repo 的 GitHub URL。",
+  "errorGitHubApiUrlUnsupported": "GitHub API URL 仅支持 /repos/owner/repo 格式。",
+  "errorGitHubDomainUnsupported": "仅支持 github.com 的 URL。",
+  "errorGitHubRepoNameUnresolved": "无法解析仓库名。",
+
+  "errorGitHubLatestReleaseNotFound": "未找到 latest release: {repo}",
+  "@errorGitHubLatestReleaseNotFound": {
+    "placeholders": {
+      "repo": {}
+    }
+  },
+
+  "errorGitHubRateLimitExceeded": "已达到 GitHub API 限流，请稍后重试。",
+
+  "errorGitHubApi": "GitHub API 错误 ({statusCode}): {detail}",
+  "@errorGitHubApi": {
+    "placeholders": {
+      "statusCode": {},
+      "detail": {}
+    }
+  },
+
+  "errorGitHubResponseParseFailed": "GitHub 响应解析失败。",
+  "errorGitHubAssetsInvalidFormat": "Release assets 格式无效。",
+
+  "errorGitHubAssetNoMatch": "没有匹配正则的 ZIP: {regex}",
+  "@errorGitHubAssetNoMatch": {
+    "placeholders": {
+      "regex": {}
+    }
+  },
+
+  "errorGitHubAssetRegexInvalid": "正则无效: {detail}",
+  "@errorGitHubAssetRegexInvalid": {
+    "placeholders": {
+      "detail": {}
+    }
+  },
+
+  "errorZipDownloadFailed": "ZIP 下载失败 ({statusCode}): {assetName}",
+  "@errorZipDownloadFailed": {
+    "placeholders": {
+      "statusCode": {},
+      "assetName": {}
+    }
+  },
+
+  "errorZipEmpty": "ZIP 为空。",
+  "errorZipInvalidPath": "ZIP 中包含无效路径: {path}",
+  "@errorZipInvalidPath": {
+    "placeholders": {
+      "path": {}
+    }
+  }
+}
