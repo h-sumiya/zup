@@ -235,10 +235,19 @@ class _AppDetailPageState extends State<AppDetailPage> {
   }
 
   Future<void> _openDirectoryInExplorer(String path) async {
-    ProcessResult result;
     if (Platform.isWindows) {
-      result = await Process.run('explorer', [path]);
-    } else if (Platform.isMacOS) {
+      final result = await Process.run('explorer', [path]);
+      final stderr = (result.stderr ?? '').toString().trim();
+      // Windowsのexplorerは成功時でもexitCode=1を返すことがある。
+      if (result.exitCode == 0 || (result.exitCode == 1 && stderr.isEmpty)) {
+        return;
+      }
+      final detail = stderr.isEmpty ? '終了コード: ${result.exitCode}' : stderr;
+      throw Exception('エクスプローラを起動できませんでした: $detail');
+    }
+
+    ProcessResult result;
+    if (Platform.isMacOS) {
       result = await Process.run('open', [path]);
     } else if (Platform.isLinux) {
       result = await Process.run('xdg-open', [path]);

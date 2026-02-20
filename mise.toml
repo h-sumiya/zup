@@ -1,2 +1,5 @@
+[tasks.testWin]
+run_windows = "git pull && flutter run -d windows"
+
 [tools]
 flutter = "beta"
