@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../models/managed_app.dart';
@@ -8,6 +10,8 @@ import '../utils/date_time_format.dart';
 import '../widgets/app_avatar.dart';
 import '../widgets/app_editor_dialog.dart';
 import '../widgets/atmosphere.dart';
+
+enum _DeleteMode { registrationOnly, registrationAndFolder }
 
 class AppDetailPage extends StatefulWidget {
   const AppDetailPage({
@@ -58,7 +62,10 @@ class _AppDetailPageState extends State<AppDetailPage> {
     });
   }
 
-  Future<void> _withBusy(Future<void> Function() task) async {
+  Future<void> _withBusy(
+    Future<void> Function() task, {
+    String? actionLabel,
+  }) async {
     if (_busy) {
       return;
     }
@@ -69,7 +76,10 @@ class _AppDetailPageState extends State<AppDetailPage> {
     try {
       await task();
     } catch (error) {
-      _showSnackBar(error.toString(), isError: true);
+      _showSnackBar(
+        _formatTaskError(error, actionLabel: actionLabel),
+        isError: true,
+      );
     } finally {
       if (mounted) {
         setState(() {
@@ -77,6 +87,61 @@ class _AppDetailPageState extends State<AppDetailPage> {
         });
       }
     }
+  }
+
+  String _formatTaskError(Object error, {String? actionLabel}) {
+    if (_isRunningAppFileLockError(error)) {
+      if (actionLabel == null || actionLabel.isEmpty) {
+        return 'ファイル操作に失敗しました。対象アプリが実行中の可能性があります。終了して再試行してください。';
+      }
+      return '$actionLabelに失敗しました。対象アプリが実行中の可能性があります。終了して再試行してください。';
+    }
+
+    final detail = _normalizeErrorMessage(error);
+    if (actionLabel == null || actionLabel.isEmpty) {
+      return detail;
+    }
+    return '$actionLabelに失敗しました: $detail';
+  }
+
+  String _normalizeErrorMessage(Object error) {
+    final raw = error.toString();
+    const prefixes = <String>[
+      'Exception: ',
+      'FileSystemException: ',
+      'ProcessException: ',
+    ];
+    for (final prefix in prefixes) {
+      if (raw.startsWith(prefix)) {
+        return raw.substring(prefix.length).trim();
+      }
+    }
+    return raw;
+  }
+
+  bool _isRunningAppFileLockError(Object error) {
+    if (error is FileSystemException) {
+      final code = error.osError?.errorCode;
+      if (code == 5 || code == 16 || code == 26 || code == 32 || code == 33) {
+        return true;
+      }
+      final osMessage = error.osError?.message ?? '';
+      final message = '$osMessage ${error.message}';
+      if (_containsBusyText(message)) {
+        return true;
+      }
+    }
+    return _containsBusyText(error.toString());
+  }
+
+  bool _containsBusyText(String value) {
+    final normalized = value.toLowerCase();
+    return normalized.contains('being used by another process') ||
+        normalized.contains('process cannot access the file') ||
+        normalized.contains('text file busy') ||
+        normalized.contains('device or resource busy') ||
+        normalized.contains('resource busy') ||
+        normalized.contains('used by another process');
   }
 
   Future<void> _checkLatestRelease() async {
@@ -136,7 +201,7 @@ class _AppDetailPageState extends State<AppDetailPage> {
       );
       await _refreshApp();
       _showSnackBar('${_app.owner}/${_app.repo} を ${release.version} に更新しました。');
-    });
+    }, actionLabel: _app.installedVersion == null ? 'インストール' : '更新');
   }
 
   Future<void> _openEditor() async {
@@ -156,45 +221,109 @@ class _AppDetailPageState extends State<AppDetailPage> {
       await _database.updateApp(_app.id, draft);
       await _refreshApp();
       _showSnackBar('登録を更新しました。');
-    });
+    }, actionLabel: '編集');
   }
 
-  Future<void> _deleteApp() async {
-    final shouldDelete = await showDialog<bool>(
+  Future<void> _openInstallDirectory() async {
+    await _withBusy(() async {
+      final directory = Directory(_app.installDir);
+      if (!await directory.exists()) {
+        throw Exception('インストール先フォルダが見つかりません: ${_app.installDir}');
+      }
+      await _openDirectoryInExplorer(directory.absolute.path);
+    }, actionLabel: '場所の表示');
+  }
+
+  Future<void> _openDirectoryInExplorer(String path) async {
+    ProcessResult result;
+    if (Platform.isWindows) {
+      result = await Process.run('explorer', [path]);
+    } else if (Platform.isMacOS) {
+      result = await Process.run('open', [path]);
+    } else if (Platform.isLinux) {
+      result = await Process.run('xdg-open', [path]);
+    } else {
+      throw UnsupportedError('このOSでは場所を開く機能を利用できません。');
+    }
+
+    if (result.exitCode != 0) {
+      final stderr = (result.stderr ?? '').toString().trim();
+      final detail = stderr.isEmpty ? '終了コード: ${result.exitCode}' : stderr;
+      throw Exception('エクスプローラを起動できませんでした: $detail');
+    }
+  }
+
+  Future<void> _deleteInstallDirectoryIfExists() async {
+    final directory = Directory(_app.installDir);
+    if (!await directory.exists()) {
+      return;
+    }
+    await directory.delete(recursive: true);
+  }
+
+  Future<_DeleteMode?> _askDeleteMode() {
+    return showDialog<_DeleteMode>(
       context: context,
       builder: (context) {
         return AlertDialog(
           backgroundColor: const Color(0xFF1A2C45),
           title: const Text('登録を削除'),
-          content: Text('${_app.owner}/${_app.repo} を一覧から削除しますか？'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('${_app.owner}/${_app.repo} を削除します。'),
+              const SizedBox(height: 8),
+              const Text('削除方法を選択してください。'),
+              const SizedBox(height: 8),
+              Text(
+                'インストール先: ${_app.installDir}',
+                style: TextStyle(color: Colors.white.withValues(alpha: 0.76)),
+              ),
+            ],
+          ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context, false),
+              onPressed: () => Navigator.pop(context),
               child: const Text('キャンセル'),
+            ),
+            OutlinedButton(
+              onPressed: () =>
+                  Navigator.pop(context, _DeleteMode.registrationOnly),
+              child: const Text('登録のみ削除'),
             ),
             FilledButton(
               style: FilledButton.styleFrom(
                 backgroundColor: const Color(0xFFCF3A5B),
               ),
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text('削除'),
+              onPressed: () =>
+                  Navigator.pop(context, _DeleteMode.registrationAndFolder),
+              child: const Text('フォルダも削除'),
             ),
           ],
         );
       },
     );
+  }
 
-    if (shouldDelete != true || !mounted) {
+  Future<void> _deleteApp() async {
+    final mode = await _askDeleteMode();
+    if (mode == null || !mounted) {
       return;
     }
 
+    final deleteFolder = mode == _DeleteMode.registrationAndFolder;
+
     await _withBusy(() async {
+      if (deleteFolder) {
+        await _deleteInstallDirectoryIfExists();
+      }
       await _database.deleteApp(_app.id);
       if (!mounted) {
         return;
       }
       Navigator.pop(context);
-    });
+    }, actionLabel: deleteFolder ? 'フォルダ削除' : '削除');
   }
 
   void _showSnackBar(String message, {bool isError = false}) {
@@ -337,6 +466,11 @@ class _AppDetailPageState extends State<AppDetailPage> {
                                     ? 'Install'
                                     : 'Update',
                               ),
+                            ),
+                            OutlinedButton.icon(
+                              onPressed: _busy ? null : _openInstallDirectory,
+                              icon: const Icon(Icons.folder_open),
+                              label: const Text('場所を開く'),
                             ),
                             TextButton.icon(
                               onPressed: _busy ? null : _openEditor,
