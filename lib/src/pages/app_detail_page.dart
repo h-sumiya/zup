@@ -29,8 +29,8 @@ class AppDetailPage extends StatefulWidget {
 
 class _AppDetailPageState extends State<AppDetailPage> {
   final AppDatabase _database = AppDatabase.instance;
-  final GitHubReleaseClient _gitHubClient = GitHubReleaseClient();
-  final ZipInstaller _installer = ZipInstaller();
+  late final GitHubReleaseClient _gitHubClient;
+  late final ZipInstaller _installer;
 
   late ManagedApp _app;
   bool _busy = false;
@@ -39,6 +39,10 @@ class _AppDetailPageState extends State<AppDetailPage> {
   void initState() {
     super.initState();
     _app = widget.app;
+    _gitHubClient = GitHubReleaseClient(
+      tokenProvider: _database.getGitHubToken,
+    );
+    _installer = ZipInstaller(tokenProvider: _database.getGitHubToken);
   }
 
   @override

@@ -6,21 +6,27 @@ import '../models/managed_app.dart';
 import '../models/release_info.dart';
 
 class GitHubReleaseClient {
+  GitHubReleaseClient({Future<String?> Function()? tokenProvider})
+    : _tokenProvider = tokenProvider;
+
+  final Future<String?> Function()? _tokenProvider;
   final http.Client _client = http.Client();
 
   Future<ReleaseInfo> fetchLatestRelease(ManagedApp app) async {
+    final token = (await _tokenProvider?.call())?.trim() ?? '';
     final uri = Uri.https(
       'api.github.com',
       '/repos/${app.owner}/${app.repo}/releases/latest',
     );
-    final response = await _client.get(
-      uri,
-      headers: const {
-        'Accept': 'application/vnd.github+json',
-        'X-GitHub-Api-Version': '2022-11-28',
-        'User-Agent': 'zup-flutter-client',
-      },
-    );
+    final headers = <String, String>{
+      'Accept': 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
+      'User-Agent': 'zup-flutter-client',
+    };
+    if (token.isNotEmpty) {
+      headers['Authorization'] = 'Bearer $token';
+    }
+    final response = await _client.get(uri, headers: headers);
 
     if (response.statusCode == 404) {
       throw Exception('latest release が見つかりません: ${app.owner}/${app.repo}');
@@ -53,7 +59,9 @@ class GitHubReleaseClient {
       }
       final map = raw.cast<String, dynamic>();
       final name = map['name']?.toString() ?? '';
-      final url = map['browser_download_url']?.toString() ?? '';
+      final apiUrl = map['url']?.toString() ?? '';
+      final browserUrl = map['browser_download_url']?.toString() ?? '';
+      final url = apiUrl.isNotEmpty ? apiUrl : browserUrl;
       if (name.isEmpty || url.isEmpty) {
         continue;
       }

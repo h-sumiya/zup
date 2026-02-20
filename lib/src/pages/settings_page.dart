@@ -4,9 +4,14 @@ import 'package:flutter/material.dart';
 import '../services/app_database.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({super.key, required this.initialDefaultInstallDir});
+  const SettingsPage({
+    super.key,
+    required this.initialDefaultInstallDir,
+    required this.initialGitHubToken,
+  });
 
   final String? initialDefaultInstallDir;
+  final String? initialGitHubToken;
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
@@ -15,8 +20,10 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   final AppDatabase _database = AppDatabase.instance;
   late final TextEditingController _defaultInstallDirController;
+  late final TextEditingController _gitHubTokenController;
 
   bool _saving = false;
+  bool _obscureGitHubToken = true;
   String? _error;
 
   @override
@@ -25,11 +32,15 @@ class _SettingsPageState extends State<SettingsPage> {
     _defaultInstallDirController = TextEditingController(
       text: widget.initialDefaultInstallDir ?? '',
     );
+    _gitHubTokenController = TextEditingController(
+      text: widget.initialGitHubToken ?? '',
+    );
   }
 
   @override
   void dispose() {
     _defaultInstallDirController.dispose();
+    _gitHubTokenController.dispose();
     super.dispose();
   }
 
@@ -64,6 +75,7 @@ class _SettingsPageState extends State<SettingsPage> {
       await _database.setDefaultInstallBaseDir(
         _defaultInstallDirController.text,
       );
+      await _database.setGitHubToken(_gitHubTokenController.text);
       if (!mounted) {
         return;
       }
@@ -124,6 +136,39 @@ class _SettingsPageState extends State<SettingsPage> {
                       label: const Text('Browse'),
                     ),
                   ],
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  'GitHub Personal Access Token (任意)',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '設定すると GitHub API 呼び出しに利用します。レート制限緩和や private repository へのアクセスに使えます。',
+                  style: TextStyle(color: Colors.white.withValues(alpha: 0.7)),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: _gitHubTokenController,
+                  autocorrect: false,
+                  enableSuggestions: false,
+                  obscureText: _obscureGitHubToken,
+                  decoration: InputDecoration(
+                    labelText: 'ghp_xxx...',
+                    helperText: '空欄で保存すると削除されます',
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _obscureGitHubToken = !_obscureGitHubToken;
+                        });
+                      },
+                      icon: Icon(
+                        _obscureGitHubToken
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                      ),
+                    ),
+                  ),
                 ),
                 if (_error != null) ...[
                   const SizedBox(height: 10),

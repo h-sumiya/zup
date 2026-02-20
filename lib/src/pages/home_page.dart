@@ -25,6 +25,7 @@ class _HomePageState extends State<HomePage> {
   bool _loading = true;
   String? _loadError;
   String? _defaultInstallBaseDir;
+  String? _gitHubToken;
 
   @override
   void initState() {
@@ -43,12 +44,14 @@ class _HomePageState extends State<HomePage> {
     try {
       final items = await _database.listApps();
       final defaultInstallDir = await _database.getDefaultInstallBaseDir();
+      final gitHubToken = await _database.getGitHubToken();
       if (!mounted) {
         return;
       }
       setState(() {
         _apps = items;
         _defaultInstallBaseDir = defaultInstallDir;
+        _gitHubToken = gitHubToken;
         _loadError = null;
       });
     } catch (error) {
@@ -117,8 +120,10 @@ class _HomePageState extends State<HomePage> {
     final changed = await Navigator.push<bool>(
       context,
       MaterialPageRoute<bool>(
-        builder: (_) =>
-            SettingsPage(initialDefaultInstallDir: _defaultInstallBaseDir),
+        builder: (_) => SettingsPage(
+          initialDefaultInstallDir: _defaultInstallBaseDir,
+          initialGitHubToken: _gitHubToken,
+        ),
       ),
     );
 

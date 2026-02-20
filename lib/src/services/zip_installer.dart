@@ -14,6 +14,10 @@ class InstallResult {
 }
 
 class ZipInstaller {
+  ZipInstaller({Future<String?> Function()? tokenProvider})
+    : _tokenProvider = tokenProvider;
+
+  final Future<String?> Function()? _tokenProvider;
   final http.Client _client = http.Client();
 
   Future<InstallResult> install({
@@ -23,10 +27,11 @@ class ZipInstaller {
     final targetDirectory = Directory(installDirectory);
     await targetDirectory.create(recursive: true);
     final targetRoot = p.normalize(p.absolute(targetDirectory.path));
+    final downloadUri = Uri.parse(asset.downloadUrl);
 
     final response = await _client.get(
-      Uri.parse(asset.downloadUrl),
-      headers: const {'User-Agent': 'zup-flutter-client'},
+      downloadUri,
+      headers: await _buildDownloadHeaders(downloadUri),
     );
 
     if (response.statusCode != 200) {
@@ -70,6 +75,27 @@ class ZipInstaller {
 
   void close() {
     _client.close();
+  }
+
+  Future<Map<String, String>> _buildDownloadHeaders(Uri uri) async {
+    final headers = <String, String>{'User-Agent': 'zup-flutter-client'};
+    if (uri.host == 'api.github.com') {
+      headers['Accept'] = 'application/octet-stream';
+      headers['X-GitHub-Api-Version'] = '2022-11-28';
+    }
+
+    if (_isGitHubHost(uri.host)) {
+      final token = (await _tokenProvider?.call())?.trim() ?? '';
+      if (token.isNotEmpty) {
+        headers['Authorization'] = 'Bearer $token';
+      }
+    }
+
+    return headers;
+  }
+
+  bool _isGitHubHost(String host) {
+    return host == 'github.com' || host == 'api.github.com';
   }
 
   Future<String?> _resolveIconPath(

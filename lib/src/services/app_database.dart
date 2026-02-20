@@ -13,6 +13,7 @@ class AppDatabase {
 
   static final AppDatabase instance = AppDatabase._();
   static const String _defaultInstallDirKey = 'default_install_base_dir';
+  static const String _githubTokenKey = 'github_token';
 
   Database? _database;
 
@@ -195,6 +196,19 @@ class AppDatabase {
       return;
     }
     await _writeSetting(_defaultInstallDirKey, normalized);
+  }
+
+  Future<String?> getGitHubToken() async {
+    return _readSetting(_githubTokenKey);
+  }
+
+  Future<void> setGitHubToken(String value) async {
+    final normalized = value.trim();
+    if (normalized.isEmpty) {
+      await _deleteSetting(_githubTokenKey);
+      return;
+    }
+    await _writeSetting(_githubTokenKey, normalized);
   }
 
   Future<void> _writeSetting(String key, String value) async {
