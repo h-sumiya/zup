@@ -18,6 +18,8 @@
   "commonDelete": "删除",
   "commonBrowse": "浏览",
   "commonNotInstalled": "未安装",
+  "commonEnabled": "启用",
+  "commonDisabled": "禁用",
 
   "commonByOwner": "by {owner}",
   "@commonByOwner": {
@@ -34,7 +36,7 @@
   },
 
   "emptyStateTitle": "尚未注册任何应用",
-  "emptyStateDescription": "添加 GitHub 仓库 URL 后，可以从 latest release 下载并解压 ZIP 资源。",
+  "emptyStateDescription": "添加 GitHub 仓库 URL 后，可从最新 release 下载并解压 ZIP（启用后可包含 pre-release）。",
 
   "sourceAdded": "已添加来源。",
   "errorLoadFailed": "加载失败: {detail}",
@@ -81,6 +83,7 @@
   "editorTitleEdit": "编辑注册",
   "editorGitHubUrlLabel": "GitHub URL",
   "editorZipRegexLabel": "ZIP 过滤正则",
+  "editorIncludePrereleaseLabel": "包含 pre-release",
   "editorInstallDirLabel": "安装目录",
 
   "editorDefaultPathNotice": "若留空或与默认路径相同，将使用“{basePath}/{repo}”。",
@@ -91,7 +94,7 @@
     }
   },
 
-  "editorLatestReleaseNote": "注意: 仅支持 latest release 的 ZIP 资源。",
+  "editorLatestReleaseNote": "注意: 关闭时使用稳定版 latest release；开启时会把 pre-release 也纳入最新版本选择（不包含 draft）。",
   "editorErrorGitHubUrlRequired": "请输入 GitHub URL。",
   "editorErrorZipRegexRequired": "请输入 ZIP 过滤正则。",
   "editorErrorInstallDirRequired": "安装目录为空。请在设置中指定默认目录，或在此处输入。",
@@ -189,6 +192,7 @@
   "detailFieldGitHubUrl": "GitHub URL",
   "detailFieldOwnerRepo": "Owner/Repo",
   "detailFieldAssetRegex": "Asset Regex",
+  "detailFieldIncludePrerelease": "包含 pre-release",
   "detailFieldInstallDir": "Install Dir",
   "detailFieldInstalledVersion": "Installed Version",
   "detailFieldLastZip": "Last ZIP",

@@ -18,6 +18,8 @@
   "commonDelete": "Delete",
   "commonBrowse": "Browse",
   "commonNotInstalled": "Not installed",
+  "commonEnabled": "Enabled",
+  "commonDisabled": "Disabled",
 
   "commonByOwner": "by {owner}",
   "@commonByOwner": {
@@ -34,7 +36,7 @@
   },
 
   "emptyStateTitle": "No apps registered yet",
-  "emptyStateDescription": "Add a GitHub repository URL to fetch and extract ZIP assets from the latest release.",
+  "emptyStateDescription": "Add a GitHub repository URL to fetch and extract ZIP assets from the latest release (including pre-release when enabled).",
 
   "sourceAdded": "Source added.",
   "errorLoadFailed": "Failed to load: {detail}",
@@ -81,6 +83,7 @@
   "editorTitleEdit": "Edit registration",
   "editorGitHubUrlLabel": "GitHub URL",
   "editorZipRegexLabel": "ZIP filter regex",
+  "editorIncludePrereleaseLabel": "Include pre-releases",
   "editorInstallDirLabel": "Install directory",
 
   "editorDefaultPathNotice": "If left empty or set to the default path, \"{basePath}/{repo}\" will be used.",
@@ -91,7 +94,7 @@
     }
   },
 
-  "editorLatestReleaseNote": "Note: only ZIP assets from the latest release are supported.",
+  "editorLatestReleaseNote": "Note: OFF uses stable latest release. ON includes pre-releases in latest release selection (drafts are excluded).",
   "editorErrorGitHubUrlRequired": "Please enter a GitHub URL.",
   "editorErrorZipRegexRequired": "Please enter a regex for ZIP filtering.",
   "editorErrorInstallDirRequired": "Install directory is empty. Set a default directory in Settings or enter one here.",
@@ -189,6 +192,7 @@
   "detailFieldGitHubUrl": "GitHub URL",
   "detailFieldOwnerRepo": "Owner/Repo",
   "detailFieldAssetRegex": "Asset Regex",
+  "detailFieldIncludePrerelease": "Include pre-releases",
   "detailFieldInstallDir": "Install Dir",
   "detailFieldInstalledVersion": "Installed Version",
   "detailFieldLastZip": "Last ZIP",

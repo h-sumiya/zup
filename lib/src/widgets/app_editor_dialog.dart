@@ -21,6 +21,7 @@ class _AppEditorDialogState extends State<AppEditorDialog> {
   late final TextEditingController _urlController;
   late final TextEditingController _regexController;
   late final TextEditingController _installDirController;
+  late bool _includePrerelease;
   String? _validationMessage;
 
   @override
@@ -35,6 +36,7 @@ class _AppEditorDialogState extends State<AppEditorDialog> {
     _installDirController = TextEditingController(
       text: widget.existing?.installDir ?? widget.defaultInstallBaseDir ?? '',
     );
+    _includePrerelease = widget.existing?.includePrerelease ?? false;
   }
 
   @override
@@ -97,6 +99,7 @@ class _AppEditorDialogState extends State<AppEditorDialog> {
           owner: repo.owner,
           repo: repo.repo,
           assetRegex: regex,
+          includePrerelease: _includePrerelease,
           installDir: installDir,
         ),
       );
@@ -138,6 +141,18 @@ class _AppEditorDialogState extends State<AppEditorDialog> {
                 ),
               ),
               const SizedBox(height: 12),
+              CheckboxListTile(
+                contentPadding: EdgeInsets.zero,
+                controlAffinity: ListTileControlAffinity.leading,
+                value: _includePrerelease,
+                onChanged: (value) {
+                  setState(() {
+                    _includePrerelease = value ?? false;
+                  });
+                },
+                title: Text(l10n.editorIncludePrereleaseLabel),
+              ),
+              const SizedBox(height: 8),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [

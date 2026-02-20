@@ -1,7 +1,7 @@
 # zup
 
 Windows向けの簡易 Obtainium 風ツールです。  
-現時点では **GitHub Releases の latest にある zip アセットのみ** を対象にします。
+GitHub Releases の ZIP アセットを対象にし、設定で pre-release を含める/含めないを選べます。
 
 ## 機能
 
@@ -12,7 +12,7 @@ Windows向けの簡易 Obtainium 風ツールです。
   - インストール先ディレクトリ
   - インストール済みバージョン
   - 最後に使ったzip名
-- 正規表現 + `.zip` 条件で latest release のアセットを選択
+- 正規表現 + `.zip` 条件で最新 release のアセットを選択（pre-release含む設定可）
 - zip をダウンロードして指定フォルダへ展開
 - Linux でもUI起動・確認可能
 

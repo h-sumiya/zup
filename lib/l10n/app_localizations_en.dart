@@ -57,6 +57,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonNotInstalled => 'Not installed';
 
   @override
+  String get commonEnabled => 'Enabled';
+
+  @override
+  String get commonDisabled => 'Disabled';
+
+  @override
   String commonByOwner(Object owner) {
     return 'by $owner';
   }
@@ -70,8 +76,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emptyStateTitle => 'No apps registered yet';
 
   @override
-  String get emptyStateDescription =>
-      'Add a GitHub repository URL to fetch and extract ZIP assets from the latest release.';
+  String get emptyStateDescription => 'Add a GitHub repository URL to fetch and extract ZIP assets from the latest release (including pre-release when enabled).';
 
   @override
   String get sourceAdded => 'Source added.';
@@ -87,8 +92,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get errorDuplicateGitHubUrl =>
-      'The same GitHub URL is already registered.';
+  String get errorDuplicateGitHubUrl => 'The same GitHub URL is already registered.';
 
   @override
   String errorActionFailed(Object action, Object detail) {
@@ -99,8 +103,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsLanguageSectionTitle => 'Language';
 
   @override
-  String get settingsLanguageSectionDescription =>
-      'Use Auto to follow your OS language. Or choose a specific language.';
+  String get settingsLanguageSectionDescription => 'Use Auto to follow your OS language. Or choose a specific language.';
 
   @override
   String get settingsLanguageLabel => 'Display language';
@@ -121,24 +124,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsDefaultInstallDirTitle => 'Default install directory';
 
   @override
-  String get settingsDefaultInstallDirDescription =>
-      'If install path is empty when registering an app, \"default path/app name\" will be used.';
+  String get settingsDefaultInstallDirDescription => 'If install path is empty when registering an app, \"default path/app name\" will be used.';
 
   @override
-  String get settingsDefaultInstallDirExample =>
-      'Example: C:\\Tools or /opt/tools';
+  String get settingsDefaultInstallDirExample => 'Example: C:\\Tools or /opt/tools';
 
   @override
-  String get settingsGitHubTokenTitle =>
-      'GitHub Personal Access Token (optional)';
+  String get settingsGitHubTokenTitle => 'GitHub Personal Access Token (optional)';
 
   @override
-  String get settingsGitHubTokenDescription =>
-      'If set, this token is used for GitHub API calls. Useful for higher rate limits and private repositories.';
+  String get settingsGitHubTokenDescription => 'If set, this token is used for GitHub API calls. Useful for higher rate limits and private repositories.';
 
   @override
-  String get settingsGitHubTokenHelper =>
-      'Saving with empty value removes the token';
+  String get settingsGitHubTokenHelper => 'Saving with empty value removes the token';
 
   @override
   String get editorTitleAdd => 'Add GitHub URL';
@@ -153,6 +151,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editorZipRegexLabel => 'ZIP filter regex';
 
   @override
+  String get editorIncludePrereleaseLabel => 'Include pre-releases';
+
+  @override
   String get editorInstallDirLabel => 'Install directory';
 
   @override
@@ -161,19 +162,16 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get editorLatestReleaseNote =>
-      'Note: only ZIP assets from the latest release are supported.';
+  String get editorLatestReleaseNote => 'Note: OFF uses stable latest release. ON includes pre-releases in latest release selection (drafts are excluded).';
 
   @override
   String get editorErrorGitHubUrlRequired => 'Please enter a GitHub URL.';
 
   @override
-  String get editorErrorZipRegexRequired =>
-      'Please enter a regex for ZIP filtering.';
+  String get editorErrorZipRegexRequired => 'Please enter a regex for ZIP filtering.';
 
   @override
-  String get editorErrorInstallDirRequired =>
-      'Install directory is empty. Set a default directory in Settings or enter one here.';
+  String get editorErrorInstallDirRequired => 'Install directory is empty. Set a default directory in Settings or enter one here.';
 
   @override
   String get detailPageTitle => 'App details';
@@ -228,8 +226,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get detailUnsupportedOpenLocation =>
-      'Open location is not supported on this OS.';
+  String get detailUnsupportedOpenLocation => 'Open location is not supported on this OS.';
 
   @override
   String get detailDeleteDialogTitle => 'Delete registration';
@@ -257,8 +254,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get detailDeleteWithFolderAction => 'Delete folder';
 
   @override
-  String get detailErrorFileOperationFailedAppRunning =>
-      'File operation failed. The app may be running. Close it and try again.';
+  String get detailErrorFileOperationFailedAppRunning => 'File operation failed. The app may be running. Close it and try again.';
 
   @override
   String detailErrorActionFailedAppRunning(Object action) {
@@ -273,6 +269,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get detailFieldAssetRegex => 'Asset Regex';
+
+  @override
+  String get detailFieldIncludePrerelease => 'Include pre-releases';
 
   @override
   String get detailFieldInstallDir => 'Install Dir';
@@ -299,20 +298,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorGitHubUrlInvalidFormat => 'GitHub URL format is invalid.';
 
   @override
-  String get errorGitHubUrlOwnerRepoMissing =>
-      'Specify a GitHub URL that includes owner/repo.';
+  String get errorGitHubUrlOwnerRepoMissing => 'Specify a GitHub URL that includes owner/repo.';
 
   @override
-  String get errorGitHubApiUrlUnsupported =>
-      'GitHub API URL supports only /repos/owner/repo format.';
+  String get errorGitHubApiUrlUnsupported => 'GitHub API URL supports only /repos/owner/repo format.';
 
   @override
-  String get errorGitHubDomainUnsupported =>
-      'Only github.com URLs are supported.';
+  String get errorGitHubDomainUnsupported => 'Only github.com URLs are supported.';
 
   @override
-  String get errorGitHubRepoNameUnresolved =>
-      'Could not resolve the repository name.';
+  String get errorGitHubRepoNameUnresolved => 'Could not resolve the repository name.';
 
   @override
   String errorGitHubLatestReleaseNotFound(Object repo) {
@@ -320,8 +315,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get errorGitHubRateLimitExceeded =>
-      'GitHub API rate limit exceeded. Please retry later.';
+  String get errorGitHubRateLimitExceeded => 'GitHub API rate limit exceeded. Please retry later.';
 
   @override
   String errorGitHubApi(Object statusCode, Object detail) {
@@ -329,12 +323,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get errorGitHubResponseParseFailed =>
-      'Failed to parse GitHub response.';
+  String get errorGitHubResponseParseFailed => 'Failed to parse GitHub response.';
 
   @override
-  String get errorGitHubAssetsInvalidFormat =>
-      'Release assets format is invalid.';
+  String get errorGitHubAssetsInvalidFormat => 'Release assets format is invalid.';
 
   @override
   String errorGitHubAssetNoMatch(Object regex) {

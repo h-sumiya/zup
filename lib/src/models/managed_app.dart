@@ -4,6 +4,7 @@ class ManagedAppDraft {
     required this.owner,
     required this.repo,
     required this.assetRegex,
+    required this.includePrerelease,
     required this.installDir,
   });
 
@@ -11,6 +12,7 @@ class ManagedAppDraft {
   final String owner;
   final String repo;
   final String assetRegex;
+  final bool includePrerelease;
   final String installDir;
 }
 
@@ -21,6 +23,7 @@ class ManagedApp {
     required this.owner,
     required this.repo,
     required this.assetRegex,
+    required this.includePrerelease,
     required this.installDir,
     required this.installedVersion,
     required this.assetName,
@@ -34,6 +37,7 @@ class ManagedApp {
   final String owner;
   final String repo;
   final String assetRegex;
+  final bool includePrerelease;
   final String installDir;
   final String? installedVersion;
   final String? assetName;
@@ -50,6 +54,7 @@ class ManagedApp {
       owner: map['owner'] as String,
       repo: map['repo'] as String,
       assetRegex: map['asset_regex'] as String,
+      includePrerelease: _readBool(map['include_prerelease']),
       installDir: map['install_dir'] as String,
       installedVersion: _readNullable(map['installed_version']),
       assetName: _readNullable(map['asset_name']),
@@ -67,5 +72,16 @@ class ManagedApp {
       return null;
     }
     return text;
+  }
+
+  static bool _readBool(Object? value) {
+    if (value is bool) {
+      return value;
+    }
+    if (value is num) {
+      return value != 0;
+    }
+    final text = value?.toString().toLowerCase().trim();
+    return text == '1' || text == 'true';
   }
 }

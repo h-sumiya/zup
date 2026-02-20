@@ -57,6 +57,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get commonNotInstalled => '未インストール';
 
   @override
+  String get commonEnabled => '有効';
+
+  @override
+  String get commonDisabled => '無効';
+
+  @override
   String commonByOwner(Object owner) {
     return 'by $owner';
   }
@@ -70,8 +76,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get emptyStateTitle => '登録されたアプリはまだありません';
 
   @override
-  String get emptyStateDescription =>
-      'GitHubのリポジトリURLを追加すると、latest release から ZIP を取得して展開できます。';
+  String get emptyStateDescription => 'GitHubのリポジトリURLを追加すると、最新リリース（設定でプレリリース含む）から ZIP を取得して展開できます。';
 
   @override
   String get sourceAdded => 'ソースを追加しました。';
@@ -98,8 +103,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settingsLanguageSectionTitle => '言語';
 
   @override
-  String get settingsLanguageSectionDescription =>
-      '「自動」はOSの言語に追従します。固定したい場合は明示的に選択してください。';
+  String get settingsLanguageSectionDescription => '「自動」はOSの言語に追従します。固定したい場合は明示的に選択してください。';
 
   @override
   String get settingsLanguageLabel => '表示言語';
@@ -120,8 +124,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settingsDefaultInstallDirTitle => 'デフォルトインストールディレクトリ';
 
   @override
-  String get settingsDefaultInstallDirDescription =>
-      '新規登録時、空欄なら「デフォルトパス/アプリ名」を採用します。';
+  String get settingsDefaultInstallDirDescription => '新規登録時、空欄なら「デフォルトパス/アプリ名」を採用します。';
 
   @override
   String get settingsDefaultInstallDirExample => '例: C:\\Tools または /opt/tools';
@@ -130,8 +133,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settingsGitHubTokenTitle => 'GitHub Personal Access Token（任意）';
 
   @override
-  String get settingsGitHubTokenDescription =>
-      '設定すると GitHub API 呼び出しに利用します。レート制限緩和や private repository へのアクセスに使えます。';
+  String get settingsGitHubTokenDescription => '設定すると GitHub API 呼び出しに利用します。レート制限緩和や private repository へのアクセスに使えます。';
 
   @override
   String get settingsGitHubTokenHelper => '空欄で保存すると削除されます';
@@ -149,6 +151,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get editorZipRegexLabel => 'ZIP フィルタ正規表現';
 
   @override
+  String get editorIncludePrereleaseLabel => 'プレリリースを含める';
+
+  @override
   String get editorInstallDirLabel => 'インストール先ディレクトリ';
 
   @override
@@ -157,7 +162,7 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get editorLatestReleaseNote => '注: 対象は latest release の ZIP アセットのみです。';
+  String get editorLatestReleaseNote => '注: チェックOFF時は安定版の latest release、ON時はプレリリースを含む最新リリースを対象にします（draftは除外）。';
 
   @override
   String get editorErrorGitHubUrlRequired => 'GitHub URLを入力してください。';
@@ -166,8 +171,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get editorErrorZipRegexRequired => 'ZIPフィルタ用の正規表現を入力してください。';
 
   @override
-  String get editorErrorInstallDirRequired =>
-      'インストール先が空です。設定画面でデフォルトディレクトリを指定するか、ここで入力してください。';
+  String get editorErrorInstallDirRequired => 'インストール先が空です。設定画面でデフォルトディレクトリを指定するか、ここで入力してください。';
 
   @override
   String get detailPageTitle => 'アプリ詳細';
@@ -250,8 +254,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get detailDeleteWithFolderAction => 'フォルダ削除';
 
   @override
-  String get detailErrorFileOperationFailedAppRunning =>
-      'ファイル操作に失敗しました。対象アプリが実行中の可能性があります。終了して再試行してください。';
+  String get detailErrorFileOperationFailedAppRunning => 'ファイル操作に失敗しました。対象アプリが実行中の可能性があります。終了して再試行してください。';
 
   @override
   String detailErrorActionFailedAppRunning(Object action) {
@@ -266,6 +269,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get detailFieldAssetRegex => 'Asset Regex';
+
+  @override
+  String get detailFieldIncludePrerelease => 'プレリリースを含める';
 
   @override
   String get detailFieldInstallDir => 'Install Dir';
@@ -292,12 +298,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get errorGitHubUrlInvalidFormat => 'GitHub URLの形式が不正です。';
 
   @override
-  String get errorGitHubUrlOwnerRepoMissing =>
-      'owner/repo を含むGitHub URLを指定してください。';
+  String get errorGitHubUrlOwnerRepoMissing => 'owner/repo を含むGitHub URLを指定してください。';
 
   @override
-  String get errorGitHubApiUrlUnsupported =>
-      'GitHub API URLは /repos/owner/repo 形式のみ対応です。';
+  String get errorGitHubApiUrlUnsupported => 'GitHub API URLは /repos/owner/repo 形式のみ対応です。';
 
   @override
   String get errorGitHubDomainUnsupported => 'github.com のURLのみ対応です。';
@@ -311,8 +315,7 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get errorGitHubRateLimitExceeded =>
-      'GitHub API rate limitに達しました。時間を置いて再試行してください。';
+  String get errorGitHubRateLimitExceeded => 'GitHub API rate limitに達しました。時間を置いて再試行してください。';
 
   @override
   String errorGitHubApi(Object statusCode, Object detail) {

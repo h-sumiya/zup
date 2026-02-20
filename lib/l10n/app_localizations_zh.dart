@@ -57,6 +57,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get commonNotInstalled => '未安装';
 
   @override
+  String get commonEnabled => '启用';
+
+  @override
+  String get commonDisabled => '禁用';
+
+  @override
   String commonByOwner(Object owner) {
     return 'by $owner';
   }
@@ -70,8 +76,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get emptyStateTitle => '尚未注册任何应用';
 
   @override
-  String get emptyStateDescription =>
-      '添加 GitHub 仓库 URL 后，可以从 latest release 下载并解压 ZIP 资源。';
+  String get emptyStateDescription => '添加 GitHub 仓库 URL 后，可从最新 release 下载并解压 ZIP（启用后可包含 pre-release）。';
 
   @override
   String get sourceAdded => '已添加来源。';
@@ -119,8 +124,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsDefaultInstallDirTitle => '默认安装目录';
 
   @override
-  String get settingsDefaultInstallDirDescription =>
-      '新建注册时若安装路径为空，将使用“默认路径/应用名”。';
+  String get settingsDefaultInstallDirDescription => '新建注册时若安装路径为空，将使用“默认路径/应用名”。';
 
   @override
   String get settingsDefaultInstallDirExample => '例如: C:\\Tools 或 /opt/tools';
@@ -129,8 +133,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsGitHubTokenTitle => 'GitHub Personal Access Token（可选）';
 
   @override
-  String get settingsGitHubTokenDescription =>
-      '设置后将用于 GitHub API 调用，可提升限流额度并访问私有仓库。';
+  String get settingsGitHubTokenDescription => '设置后将用于 GitHub API 调用，可提升限流额度并访问私有仓库。';
 
   @override
   String get settingsGitHubTokenHelper => '留空保存会删除该 Token';
@@ -148,6 +151,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get editorZipRegexLabel => 'ZIP 过滤正则';
 
   @override
+  String get editorIncludePrereleaseLabel => '包含 pre-release';
+
+  @override
   String get editorInstallDirLabel => '安装目录';
 
   @override
@@ -156,7 +162,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get editorLatestReleaseNote => '注意: 仅支持 latest release 的 ZIP 资源。';
+  String get editorLatestReleaseNote => '注意: 关闭时使用稳定版 latest release；开启时会把 pre-release 也纳入最新版本选择（不包含 draft）。';
 
   @override
   String get editorErrorGitHubUrlRequired => '请输入 GitHub URL。';
@@ -248,8 +254,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get detailDeleteWithFolderAction => '删除文件夹';
 
   @override
-  String get detailErrorFileOperationFailedAppRunning =>
-      '文件操作失败。目标应用可能仍在运行，请先关闭后重试。';
+  String get detailErrorFileOperationFailedAppRunning => '文件操作失败。目标应用可能仍在运行，请先关闭后重试。';
 
   @override
   String detailErrorActionFailedAppRunning(Object action) {
@@ -264,6 +269,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get detailFieldAssetRegex => 'Asset Regex';
+
+  @override
+  String get detailFieldIncludePrerelease => '包含 pre-release';
 
   @override
   String get detailFieldInstallDir => 'Install Dir';
@@ -293,8 +301,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get errorGitHubUrlOwnerRepoMissing => '请输入包含 owner/repo 的 GitHub URL。';
 
   @override
-  String get errorGitHubApiUrlUnsupported =>
-      'GitHub API URL 仅支持 /repos/owner/repo 格式。';
+  String get errorGitHubApiUrlUnsupported => 'GitHub API URL 仅支持 /repos/owner/repo 格式。';
 
   @override
   String get errorGitHubDomainUnsupported => '仅支持 github.com 的 URL。';

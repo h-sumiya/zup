@@ -44,7 +44,7 @@ class AppDatabase {
 
     _database = await openDatabase(
       databasePath,
-      version: 2,
+      version: 3,
       onCreate: (db, version) async {
         await _createAppsTable(db);
         await _createSettingsTable(db);
@@ -54,6 +54,13 @@ class AppDatabase {
           await _safeAddColumn(db, 'apps', 'icon_path TEXT');
           await _safeAddColumn(db, 'apps', 'launch_exe_path TEXT');
           await _createSettingsTable(db);
+        }
+        if (oldVersion < 3) {
+          await _safeAddColumn(
+            db,
+            'apps',
+            'include_prerelease INTEGER NOT NULL DEFAULT 0',
+          );
         }
       },
     );
@@ -69,6 +76,7 @@ class AppDatabase {
         owner TEXT NOT NULL,
         repo TEXT NOT NULL,
         asset_regex TEXT NOT NULL,
+        include_prerelease INTEGER NOT NULL DEFAULT 0,
         install_dir TEXT NOT NULL,
         installed_version TEXT,
         asset_name TEXT,
@@ -130,6 +138,7 @@ class AppDatabase {
       'owner': draft.owner,
       'repo': draft.repo,
       'asset_regex': draft.assetRegex,
+      'include_prerelease': draft.includePrerelease ? 1 : 0,
       'install_dir': draft.installDir,
       'installed_version': null,
       'asset_name': null,
@@ -150,6 +159,7 @@ class AppDatabase {
         'owner': draft.owner,
         'repo': draft.repo,
         'asset_regex': draft.assetRegex,
+        'include_prerelease': draft.includePrerelease ? 1 : 0,
         'install_dir': draft.installDir,
         'updated_at': now,
       },

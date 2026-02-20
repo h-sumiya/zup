@@ -533,6 +533,12 @@ class _AppDetailPageState extends State<AppDetailPage> {
                                 value: _app.assetRegex,
                               ),
                               _DetailRow(
+                                label: l10n.detailFieldIncludePrerelease,
+                                value: _app.includePrerelease
+                                    ? l10n.commonEnabled
+                                    : l10n.commonDisabled,
+                              ),
+                              _DetailRow(
                                 label: l10n.detailFieldInstallDir,
                                 value: _app.installDir,
                               ),

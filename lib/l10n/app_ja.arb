@@ -18,6 +18,8 @@
   "commonDelete": "削除",
   "commonBrowse": "参照",
   "commonNotInstalled": "未インストール",
+  "commonEnabled": "有効",
+  "commonDisabled": "無効",
 
   "commonByOwner": "by {owner}",
   "@commonByOwner": {
@@ -34,7 +36,7 @@
   },
 
   "emptyStateTitle": "登録されたアプリはまだありません",
-  "emptyStateDescription": "GitHubのリポジトリURLを追加すると、latest release から ZIP を取得して展開できます。",
+  "emptyStateDescription": "GitHubのリポジトリURLを追加すると、最新リリース（設定でプレリリース含む）から ZIP を取得して展開できます。",
 
   "sourceAdded": "ソースを追加しました。",
   "errorLoadFailed": "読み込みに失敗しました: {detail}",
@@ -81,6 +83,7 @@
   "editorTitleEdit": "登録を編集",
   "editorGitHubUrlLabel": "GitHub URL",
   "editorZipRegexLabel": "ZIP フィルタ正規表現",
+  "editorIncludePrereleaseLabel": "プレリリースを含める",
   "editorInstallDirLabel": "インストール先ディレクトリ",
 
   "editorDefaultPathNotice": "空欄またはデフォルトパス指定時は「{basePath}/{repo}」を採用します。",
@@ -91,7 +94,7 @@
     }
   },
 
-  "editorLatestReleaseNote": "注: 対象は latest release の ZIP アセットのみです。",
+  "editorLatestReleaseNote": "注: チェックOFF時は安定版の latest release、ON時はプレリリースを含む最新リリースを対象にします（draftは除外）。",
   "editorErrorGitHubUrlRequired": "GitHub URLを入力してください。",
   "editorErrorZipRegexRequired": "ZIPフィルタ用の正規表現を入力してください。",
   "editorErrorInstallDirRequired": "インストール先が空です。設定画面でデフォルトディレクトリを指定するか、ここで入力してください。",
@@ -189,6 +192,7 @@
   "detailFieldGitHubUrl": "GitHub URL",
   "detailFieldOwnerRepo": "Owner/Repo",
   "detailFieldAssetRegex": "Asset Regex",
+  "detailFieldIncludePrerelease": "プレリリースを含める",
   "detailFieldInstallDir": "Install Dir",
   "detailFieldInstalledVersion": "Installed Version",
   "detailFieldLastZip": "Last ZIP",
