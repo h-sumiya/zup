@@ -18,6 +18,9 @@ run = "npm run dev"
 dir = "site"
 run = "npm run deploy"
 
+[tasks.release]
+run = "bash scripts/release.sh"
+
 [tools]
 flutter = "beta"
 node = "latest"
