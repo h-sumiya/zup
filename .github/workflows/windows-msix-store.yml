@@ -68,6 +68,7 @@ jobs:
             --install-certificate false `
             --build-windows false `
             --languages en-us,ja-jp,zh-cn `
+            --logo-path assets/icon/icon.png `
             --version $env:MSIX_VERSION `
             --output-path dist `
             --output-name $outputName
